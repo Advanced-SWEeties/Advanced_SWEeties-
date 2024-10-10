@@ -1,5 +1,6 @@
 package dev.TeamProject;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,12 +12,18 @@ import dev.TeamProject.model.Kitchen;
 import dev.TeamProject.model.User;
 import dev.TeamProject.model.WaitTimePrediction;
 import dev.TeamProject.model.Rating;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 public class Controller {
+
+    // get the Google API key
+    @Value("${google.map.key}")
+    String apiKey;
+
     // home endpoint
     @GetMapping("/")
     public ResponseEntity<String> home() {
@@ -39,11 +46,19 @@ public class Controller {
      */
     // 1. Get Nearest Kitchens
     @GetMapping("/kitchens/nearest")
-    public ResponseEntity<List<Kitchen>> getNearestKitchens(
-            @RequestParam String address,
-            @RequestParam int count) {
+    public ResponseEntity<?> getNearestKitchens(
+            @RequestParam String address
+//            @RequestParam int count
+    ) {
+
         // Logic to retrieve nearest kitchens
-        return new ResponseEntity<>(/* List of Kitchens, */ HttpStatus.OK);
+        RestTemplate restTemplate = new RestTemplate();
+        String requestUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=" +
+            address + "&key=" + apiKey;
+
+        ResponseEntity<String> response = restTemplate.getForEntity(requestUrl, String.class);
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+//        return new ResponseEntity<>(/* List of Kitchens, */ HttpStatus.OK);
     }
 
     /*
@@ -64,6 +79,8 @@ public class Controller {
         // Logic to retrieve top-rated kitchens
         return new ResponseEntity<>(/* List of Kitchens, */ HttpStatus.OK);
     }
+
+
 
     /*
      * Endpoint: /kitchens/details

@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### avoid exposing keys to the public ###
+application.properties
