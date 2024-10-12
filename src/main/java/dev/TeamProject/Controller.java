@@ -57,8 +57,8 @@ public class Controller {
             address + "&key=" + apiKey;
 
         ResponseEntity<String> response = restTemplate.getForEntity(requestUrl, String.class);
-        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
-//        return new ResponseEntity<>(/* List of Kitchens, */ HttpStatus.OK);
+//        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+        return new ResponseEntity<>(/* List of Kitchens, */ HttpStatus.OK);
     }
 
     /*
