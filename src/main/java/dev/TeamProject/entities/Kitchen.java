@@ -1,4 +1,4 @@
-package dev.TeamProject.model;
+package dev.TeamProject.entities;
 
 public class Kitchen {
     private Long kitchenId;

@@ -1,17 +1,19 @@
 package dev.TeamProject;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.TeamProject.model.LocationDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.security.access.prepost.PreAuthorize;
 
-import dev.TeamProject.model.Kitchen;
-import dev.TeamProject.model.User;
-import dev.TeamProject.model.WaitTimePrediction;
-import dev.TeamProject.model.Rating;
+import dev.TeamProject.entities.Kitchen;
+import dev.TeamProject.entities.User;
+import dev.TeamProject.entities.WaitTimePrediction;
+import dev.TeamProject.entities.Rating;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -56,9 +58,33 @@ public class Controller {
         String requestUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=" +
             address + "&key=" + apiKey;
 
-        ResponseEntity<String> response = restTemplate.getForEntity(requestUrl, String.class);
-//        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
-        return new ResponseEntity<>(/* List of Kitchens, */ HttpStatus.OK);
+        try{
+            ResponseEntity<String> response = restTemplate.getForEntity(requestUrl, String.class);
+            ObjectMapper mapper = new ObjectMapper();
+
+            JsonNode root = mapper.readTree(response.getBody());
+            String s =  root.path("status").asText();
+            JsonNode results = root.path("results");
+
+            /* ZERO_RESULTS probably resulted from invalid address input, prompt the user to enter a valid address  */
+            if (s.equals("ZERO_RESULTS")) {
+                return new ResponseEntity<>("Invalid address, please try again with an accurate address", HttpStatus.BAD_REQUEST);
+            } else {
+                // get the latitude and longitude
+                JsonNode location = results.get(0).path("geometry").path("location");
+                double lat = location.path("lat").asDouble();
+                double lng = location.path("lng").asDouble();
+
+                // get the full name of the address
+                String formattedAddress = results.get(0).path("formatted_address").asText();
+
+                LocationDTO locationResponse = new LocationDTO(lat, lng, formattedAddress);
+                return new ResponseEntity<>(locationResponse, HttpStatus.OK);
+                //        return new ResponseEntity<>(/* List of Kitchens, */ HttpStatus.OK);
+            }
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
     }
 
     /*
