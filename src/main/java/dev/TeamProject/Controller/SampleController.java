@@ -1,22 +1,21 @@
-package dev.TeamProject;
+package dev.TeamProject.Controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.security.access.prepost.PreAuthorize;
 
-import dev.TeamProject.model.Kitchen;
-import dev.TeamProject.model.User;
-import dev.TeamProject.model.WaitTimePrediction;
-import dev.TeamProject.model.Rating;
+import dev.TeamProject.Model.Kitchen;
+import dev.TeamProject.Model.User;
+import dev.TeamProject.Model.WaitTimePrediction;
+import dev.TeamProject.Model.Rating;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-public class Controller {
+public class SampleController {
     // home endpoint
     @GetMapping("/")
     public ResponseEntity<String> home() {
