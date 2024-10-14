@@ -1,4 +1,4 @@
-package dev.TeamProject.model;
+package dev.TeamProject.Model;
 
 public class Rating {
     private Long kitchenId;
