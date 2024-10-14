@@ -2,21 +2,23 @@ package dev.TeamProject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.TeamProject.entities.*;
 import dev.TeamProject.model.LocationDTO;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 // import org.springframework.security.access.prepost.PreAuthorize;
 
-import dev.TeamProject.entities.Kitchen;
-import dev.TeamProject.entities.User;
-import dev.TeamProject.entities.WaitTimePrediction;
-import dev.TeamProject.entities.Rating;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -85,6 +87,105 @@ public class Controller {
         } catch (Exception e) {
           throw new RuntimeException(e);
         }
+    }
+
+    @GetMapping("/allKitchens")
+    public ResponseEntity<?> PopulateKitchenData(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        headers.add("X-Goog-Api-Key", apiKey);
+        headers.add("X-Goog-FieldMask", "*");
+//       headers.add("X-Goog-FieldMask", "places.displayName,places.formattedAddress,places.location");
+
+        String requestUrl = "https://places.googleapis.com/v1/places:searchText";
+        String body = "{ \"textQuery\": \"soup kitchen in New York City\", \"regionCode\": \"US\" }";
+        HttpEntity<String> request = new HttpEntity<>(body, headers);
+        RestTemplate template = new RestTemplate();
+        List<TempInfo> tempInfos = new ArrayList<>();
+
+        try{
+            ResponseEntity<String> response = template.postForEntity(requestUrl,request,String.class);
+            ObjectMapper mapper =  new ObjectMapper();
+            JsonNode root = mapper.readTree(response.getBody());
+            if (root.size() == 0) {
+                return new ResponseEntity<>("No data found, please enter a valid address", HttpStatus.NOT_FOUND);
+            }
+
+            JsonNode places = root.path("places");
+            for (JsonNode place : places) {
+                String formattedAddress = place.path("formattedAddress").asText();
+                String displayName = place.path("displayName").path("text").asText();
+                String id = place.path("id").asText();
+                String number= place.path("nationalPhoneNumber").asText();
+                double rating = place.path("rating").asDouble();
+                String businessStatus = place.path("businessStatus").asText();
+
+                JsonNode location = place.path("location");
+                double lat = location.path("latitude").asDouble();
+                double lng = location.path("longitude").asDouble();
+                List<String> operatingHours = new ArrayList<>();
+                JsonNode weekdayDescriptions = place.path("regularOpeningHours").path("weekdayDescriptions"); //
+                if (weekdayDescriptions.isArray()) {
+                    for (JsonNode hour : weekdayDescriptions) {
+                        operatingHours.add(hour.asText());
+                    }
+                }
+
+                Map<String, Object> reviewsInfo = new HashMap<>();
+                JsonNode reviews = place.path("reviews");
+                if (reviews.isArray()) {
+                    for (JsonNode review : reviews) {
+                        String authorName = review.path("authorAttribution").path("displayName").asText();
+                        String authorUri = review.path("authorAttribution").path("uri").asText();
+                        int reviewerRating = review.path("rating").asInt();
+                        String reviewText = review.path("text").path("text").asText();
+                        String publishTime = review.path("publishTime").asText();
+                        String relativeTime = review.path("relativePublishTimeDescription").asText();
+                        reviewsInfo.put("authorName", authorName);
+                        reviewsInfo.put("authorUri", authorUri);
+                        reviewsInfo.put("reviewerRating", reviewerRating);
+                        reviewsInfo.put("reviewText", reviewText);
+                        reviewsInfo.put("publishTime", publishTime);
+                        reviewsInfo.put("relativeTime", relativeTime);
+                    }
+                }
+
+                Map<String, Boolean> accessibilityOptionMap = new HashMap<>();
+                JsonNode accessibilityOptions = place.path("accessibilityOptions");
+                // warning: some of the fields are optional, so we need to check if they exist before we access them
+                boolean wheelchairAccessibleParking;
+                boolean wheelchairAccessibleRestroom;
+                boolean wheelchairAccessibleSeating;
+                boolean wheelchairAccessibleEntrance;
+
+                if (accessibilityOptions.has("wheelchairAccessibleEntrance")) {
+                    wheelchairAccessibleParking = accessibilityOptions.path("wheelchairAccessibleParking").asBoolean();
+                    accessibilityOptionMap.put("wheelchairAccessibleParking", wheelchairAccessibleParking);
+                }
+
+                if (accessibilityOptions.has("wheelchairAccessibleRestroom")) {
+                    wheelchairAccessibleRestroom = accessibilityOptions.path("wheelchairAccessibleRestroom").asBoolean();
+                    accessibilityOptionMap.put("wheelchairAccessibleRestroom", wheelchairAccessibleRestroom);
+                }
+
+                if (accessibilityOptions.has("wheelchairAccessibleSeating")) {
+                    wheelchairAccessibleSeating = accessibilityOptions.path("wheelchairAccessibleSeating").asBoolean();
+                    accessibilityOptionMap.put("wheelchairAccessibleSeating", wheelchairAccessibleSeating);
+                }
+
+                if (accessibilityOptions.has("wheelchairAccessibleEntrance")) {
+                    wheelchairAccessibleEntrance = accessibilityOptions.path("wheelchairAccessibleEntrance").asBoolean();
+                    accessibilityOptionMap.put("wheelchairAccessibleEntrance", wheelchairAccessibleEntrance);
+                }
+
+                tempInfos.add(new TempInfo(displayName, formattedAddress,
+                    lat, lng, id, number,rating, operatingHours, businessStatus,
+                    reviewsInfo, accessibilityOptionMap));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return new ResponseEntity<>(tempInfos, HttpStatus.OK);
     }
 
     /*
