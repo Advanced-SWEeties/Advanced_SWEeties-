@@ -1,11 +1,23 @@
-package dev.TeamProject.Model;
+package dev.teamproject.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import jakarta.validation.constraints.*;
-import lombok.*;
-import jakarta.persistence.*;
-
-import java.util.*;
+/**
+ * Represents a kitchen entity in the application.
+ * This class contains details about a kitchen, including its name, address,
+ * contact information, rating, and operational status.
+ */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,14 +50,19 @@ public class Kitchen {
   public String toString() {
     return this.getKitchenId() + " " + this.getName() + " " + this.getAddress() + ".";
   }
+  
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
+    if (this == o) {
+      return true;
+    }
+
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
     return Objects.equals(this.getKitchenId(), ((Kitchen) o).getKitchenId());
   }
+  
   @Override
   public int hashCode() {
     return getClass().hashCode();

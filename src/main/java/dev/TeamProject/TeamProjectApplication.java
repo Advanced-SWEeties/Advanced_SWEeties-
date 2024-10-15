@@ -1,21 +1,30 @@
-package dev.TeamProject;
+package dev.teamproject;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.*;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 // import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
-// TODO# this is only here for building when no data source supplied. One should uncomment the next
-//  line (and delete this one) after setting up its own Mysql instance and change accordingly in
-//  "application.properties".
-@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
-//@SpringBootApplication
-// @EnableMethodSecurity // The corresponding Spring Security configuration is not implemented (TODO)
+/**
+ * Main application class for the Team Project.
+ * This class serves as the entry point for the Spring Boot application.
+ * 
+ * <p>
+ * The application is currently configured to exclude DataSourceAutoConfiguration.
+ * Uncomment the appropriate lines to enable database support once a MySQL instance is set up.
+ * </p>
+ */
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+// @SpringBootApplication
+// @EnableMethodSecurity 
+// The corresponding Spring Security configuration is not implemented (TODO)
 public class TeamProjectApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(TeamProjectApplication.class, args);
-	}
-
-
+  /**
+   * The main method which serves as the entry point for the application.
+   * 
+   */
+  public static void main(String[] args) {
+    SpringApplication.run(TeamProjectApplication.class, args);
+  }
 }
