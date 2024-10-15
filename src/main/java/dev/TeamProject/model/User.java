@@ -1,22 +1,23 @@
 package dev.TeamProject.model;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
 public class User {
     private static Long userIdCounter = 0L; // Static variable to keep track of user IDs
     private Long userId;
     private String username;
     private String password;
     private String apiKey;
-    private String userType; // Standard, SuperGoldenPlus, Manager
-    private boolean pickUp;
-    private int pickUpCount;
-    
-    // Getters and Setters}
+    private String userType; // Standard, GoldenPlus, SuperGoldenPlus
+    private LocalDateTime accountCreationTime; // Timestamp for when the account was created
 
     // Getters and Setters
     public void createAccount(String username, String password) {
         this.userId = generateUserId(); 
         this.username = username;
         this.password = password;
+        this.accountCreationTime = LocalDateTime.now(); // Set the creation time
         this.setUserType();
         // Additional logic for account creation (e.g., storing in database)
     }
@@ -34,14 +35,9 @@ public class User {
         this.password = password;
     }
 
-    public String getUserType() {
-        return userType;
-    }
-
     // Function to set the API key
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
-        // Additional logic if needed, e.g., validation or saving to a database
     }
 
     public String getApiKey() {
@@ -50,35 +46,30 @@ public class User {
 
     // Function to log in
     public boolean login(String username, String password) {
-        // Logic to validate username and password against stored user data
-        return this.username.equals(username) && this.password.equals(password);
+        if (this.username.equals(username) && this.password.equals(password)){
+            this.setUserType();
+            return true;
+        }
+        return false;
     }
 
-    // Function to set user type based on pickup count
+    // Function to set user type based on account age in months
     private void setUserType() {
-        if (this.pickUpCount >= 30) {
+        long accountAgeInMonths = ChronoUnit.MONTHS.between(accountCreationTime, LocalDateTime.now());
+
+        if (accountAgeInMonths >= 5) {
             this.userType = "SuperGoldenPlus";
-        } else if (this.pickUpCount >= 20) {
+        } else if (accountAgeInMonths >= 3) {
             this.userType = "GoldenPlus";
-        } else if (this.pickUpCount >= 10) {
+        } else if (accountAgeInMonths >= 1) {
             this.userType = "Gold";
         } else {
-            this.userType = "Standard"; // Default user type if below 10
+            this.userType = "Standard"; // Default user type for accounts less than 1 month old
         }
     }
-
-    // Function to set availability for pickup
-    public void setAvailableForPickup() {
-        // Logic to mark the user as available for pickup (e.g., update a database field)
-        // Also to store the number of pickups for a user
-        this.pickUp = true;
-        this.pickUpCount += 1;
-        setUserType();
+    
+    public String getUserType() {
+        return userType;
     }
 
-    // Function to get user location (external API call)
-    public void getUserLocation() {
-        // Logic to call an external API to get the user's location
-        // For example, using an HTTP client to make a request to the location API
-    }
 }
