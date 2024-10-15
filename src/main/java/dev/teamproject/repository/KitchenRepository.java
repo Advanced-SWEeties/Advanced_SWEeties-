@@ -1,9 +1,10 @@
 package dev.teamproject.repository;
 
-import dev.teamproject.model;
-import java.util;
-import org.springframework.data.jpa.repository;
-import org.springframework.stereotype;
+import dev.teamproject.model.Kitchen; // Importing specific class
+import java.util.List;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository; // Importing specific class
+import org.springframework.stereotype.Repository;
 
 /**
  * Repository interface for accessing Kitchen entities from the database.

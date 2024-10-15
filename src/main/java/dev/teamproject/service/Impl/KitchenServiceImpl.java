@@ -1,7 +1,6 @@
 package dev.teamproject.service.impl;
 
-import dev.teamproject.service;
-import java.security;
+import dev.teamproject.service.KitchenService; // Correct import
 import org.springframework.stereotype.Service;
 
 /**
@@ -10,4 +9,5 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class KitchenServiceImpl implements KitchenService {
+    // Implementation of KitchenService methods will go here
 }
