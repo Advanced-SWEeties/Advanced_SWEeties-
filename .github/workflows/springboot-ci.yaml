@@ -44,4 +44,4 @@ jobs:
       with:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
     - name: Deploy to Google App Engine
-      run: gcloud app deploy app.yaml --quiet
+      run: gcloud app deploy app.yaml
