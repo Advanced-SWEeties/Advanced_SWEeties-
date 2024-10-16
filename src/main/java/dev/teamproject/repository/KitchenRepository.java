@@ -19,4 +19,8 @@ public interface KitchenRepository extends JpaRepository<Kitchen, Long> {
   Optional<Kitchen> findByName(String name);
   
   List<Kitchen> findByNameContaining(String namePart);
+
+  Optional<Kitchen> findByKitchenId(long id);
+
+  List<Kitchen> findTop20ByOrderByRatingDesc();
 }

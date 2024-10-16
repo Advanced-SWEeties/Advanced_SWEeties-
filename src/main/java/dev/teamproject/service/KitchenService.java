@@ -1,6 +1,10 @@
 package dev.teamproject.service;
 
 
+import dev.teamproject.model.*;
+
+import java.util.*;
+
 /**
  * Interface for Kitchen Service.
  * This interface defines the contract for kitchen-related operations.
@@ -8,4 +12,13 @@ package dev.teamproject.service;
  * related to kitchen management.
  */
 public interface KitchenService {
+  Kitchen saveKitchen(Kitchen kitchen);
+  List<Kitchen> getAllKitchens();
+  Optional<Kitchen> getKitchenById(long id);
+  Optional<Kitchen> getKitchenByName(String kitchenName);
+  Kitchen updateKitchen(Kitchen kitchen,long id);
+  List<Kitchen> searchKitchen(String kitchenName);
+  List<Kitchen> topRatedKitchens();
+
+  void deleteKitchen(long id);
 }

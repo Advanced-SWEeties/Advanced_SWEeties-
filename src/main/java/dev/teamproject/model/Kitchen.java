@@ -45,6 +45,14 @@ public class Kitchen {
   private String operatingHours;
   private Boolean operationalStatus;
 
+
+
+//  @OneToMany(mappedBy = "kitchen")
+//  private Set<Distributer> distributers;
+
+  //  @OneToMany(mappedBy = "kitchen")
+//  private Set<Rating> Ratings;
+
   // getters and setters are generated through @data annotation from lombok
   @Override
   public String toString() {
