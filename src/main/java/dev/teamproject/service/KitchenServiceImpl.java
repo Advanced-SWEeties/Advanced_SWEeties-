@@ -1,4 +1,4 @@
-package dev.teamproject.service.impl;
+package dev.teamproject.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,7 +7,7 @@ import dev.teamproject.model.Rating;
 import dev.teamproject.model.TempInfo;
 import dev.teamproject.repository.KitchenRepository;
 import dev.teamproject.repository.RatingRepository;
-import dev.teamproject.service.KitchenService; // Correct import
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ import org.springframework.web.client.RestTemplate;
 //@Primary
 @RequiredArgsConstructor
 @Service
-//@Primary
+@Primary
 public class KitchenServiceImpl implements KitchenService {
   // get the Google API key
   @Value("${google.map.key}")
