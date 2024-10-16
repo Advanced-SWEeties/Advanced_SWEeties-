@@ -7,7 +7,6 @@ import dev.teamproject.model.Rating;
 import dev.teamproject.model.TempInfo;
 import dev.teamproject.repository.KitchenRepository;
 import dev.teamproject.repository.RatingRepository;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +26,6 @@ import org.springframework.web.client.RestTemplate;
  * Implementation of the KitchenService interface.
  * This service contains the business logic related to kitchen operations.
  */
-//@Primary
 @RequiredArgsConstructor
 @Service
 @Primary
