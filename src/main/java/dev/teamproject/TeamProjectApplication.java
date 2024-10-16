@@ -15,9 +15,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * Uncomment the appropriate lines to enable database support once a MySQL instance is set up.
  * </p>
  */
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+//@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableJpaRepositories(basePackages = "dev.teamproject.repository")
-//@SpringBootApplication
+@SpringBootApplication
 // @EnableMethodSecurity
 // The corresponding Spring Security configuration is not implemented (TODO)
 public class TeamProjectApplication {
