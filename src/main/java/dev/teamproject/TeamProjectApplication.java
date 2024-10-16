@@ -3,6 +3,7 @@ package dev.teamproject;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 // import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 /**
@@ -14,8 +15,8 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
  * Uncomment the appropriate lines to enable database support once a MySQL instance is set up.
  * </p>
  */
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-// @SpringBootApplication
+// @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@SpringBootApplication
 // @EnableMethodSecurity 
 // The corresponding Spring Security configuration is not implemented (TODO)
 public class TeamProjectApplication {

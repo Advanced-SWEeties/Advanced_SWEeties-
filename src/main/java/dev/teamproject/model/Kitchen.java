@@ -1,5 +1,6 @@
 package dev.teamproject.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,18 +33,25 @@ public class Kitchen {
   @NotBlank
   @Size(max = 200)
   private String address;
-  @Email
-  @Size(max = 100)
-  private String contactEmail;
+  //  @Email
+  //  @Size(max = 100)
+  //  private String contactEmail;
   @Size(max = 50)
   private String contactPhone;
   //private double distance; location/coordinate is making more sense here? address solely is
   // enough.
+
+  private Double latitude;
+  private Double longitude;
+
   private Double rating;
-  @Size(max = 100)
+
+  @Size(max = 200)
   private String accessibilityFeatures;
+
+  @Column(columnDefinition = "TEXT")
   private String operatingHours;
-  private Boolean operationalStatus;
+  private String operationalStatus;
 
   // getters and setters are generated through @data annotation from lombok
   @Override

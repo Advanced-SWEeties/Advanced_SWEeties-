@@ -1,10 +1,16 @@
 package dev.teamproject.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.teamproject.model.Kitchen;
 import dev.teamproject.model.Rating;
+import dev.teamproject.model.TempInfo;
 import dev.teamproject.model.User;
 import dev.teamproject.model.WaitTimePrediction;
+import dev.teamproject.service.KitchenService;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,12 +21,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
 
 /**
  * Controller for managing kitchen-related endpoints.
  * This class handles HTTP requests related to kitchen operations.
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class SampleController {
   // home endpoint
@@ -28,30 +37,71 @@ public class SampleController {
   public ResponseEntity<String> home() {
     return new ResponseEntity<>("Welcome to the Kitchen API!", HttpStatus.OK);
   }
-    
-  /*
-    * Endpoint: /kitchens/nearest
-    * Method: GET
-    *
-    * Query Parameters:
-    * String - A string indicating the address
-    * count - Number of charity kitchens to return.
-    * Description: Retrieves the specified number of nearest charity 
-    * kitchens based on the user’s geographical location.
-    *
-    * Response:
-    * 200 OK - Returns a list of kitchens with details such as name, address, distance, 
-    * rating, and accessibility features.
-    * 400 Bad Request - If the parameters are invalid.
-    * 500 Internal Server Error - For unexpected backend errors.
-    */
+
+  // get the Google API key
+  @Value("${google.map.key}")
+  String apiKey;
+
+  private final KitchenService kitchenService;
+
+  /**
+   * Endpoint: /kitchens/nearest
+   * Method: GET
+   *
+   * <p>Query Parameters:
+   * - address: A string indicating the address
+   * - count: Number of charity kitchens to return.
+   * Description: Retrieves the specified number of nearest charity
+   * kitchens based on the user’s geographical location.
+   *
+   * <p>Response:
+   * - 200 OK: Returns a list of kitchens with details such as name, address, distance,
+   *           rating, and accessibility features.
+   * - 400 Bad Request: If the parameters are invalid.
+   * - 500 Internal Server Error: For unexpected backend errors.
+   */
   // 1. Get Nearest Kitchens
   @GetMapping("/kitchens/nearest")
-  public ResponseEntity<List<Kitchen>> getNearestKitchens(
-      @RequestParam String address,
-      @RequestParam int count) {
-    // Logic to retrieve nearest kitchens
-    return new ResponseEntity<>(/* List of Kitchens, */ HttpStatus.OK);
+  public ResponseEntity<?> getNearestKitchens(
+      @RequestParam String address
+  ) {
+
+    RestTemplate restTemplate = new RestTemplate();
+    String requestUrl = "https://maps.googleapis.com/maps/api/geocode/json?address="
+        + address + "&key=" + apiKey;
+
+    try {
+      ResponseEntity<String> response = restTemplate.getForEntity(requestUrl, String.class);
+      ObjectMapper mapper = new ObjectMapper();
+
+      JsonNode root = mapper.readTree(response.getBody());
+      String s =  root.path("status").asText();
+      JsonNode results = root.path("results");
+
+      /* ZERO_RESULTS probably resulted from invalid address input, prompt the user
+      to enter a valid address  */
+      if (s.equals("ZERO_RESULTS")) {
+        return new ResponseEntity<>("Invalid address, please try again with an accurate "
+            + "address", HttpStatus.BAD_REQUEST);
+      } else {
+        // get the latitude and longitude
+        JsonNode location = results.get(0).path("geometry").path("location");
+        double lat = location.path("lat").asDouble();
+        double lng = location.path("lng").asDouble();
+
+        // get the full name of the address
+        String formattedAddress = results.get(0).path("formatted_address").asText();
+
+
+        // temporarily use a service to get the all kitchens
+        List<TempInfo> allKitchens = kitchenService.fetchAllKitchens();
+
+        // tempararily return all kitchens
+        return new ResponseEntity<>(allKitchens, HttpStatus.OK);
+      }
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /*
