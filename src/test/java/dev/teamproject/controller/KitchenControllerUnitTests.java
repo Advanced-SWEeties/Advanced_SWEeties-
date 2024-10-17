@@ -17,6 +17,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.teamproject.model.Kitchen;
 import dev.teamproject.service.KitchenService;
 import java.util.Optional;
+
+import dev.teamproject.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -44,6 +46,9 @@ public class KitchenControllerUnitTests {
 
   @MockBean
   private KitchenService kitchenService;
+
+  @MockBean
+  private UserService userService;
 
   @Autowired
   private ObjectMapper objectMapper;
