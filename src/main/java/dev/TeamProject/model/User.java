@@ -56,15 +56,15 @@ public class User {
     // Function to set user type based on account age in months
     private void setUserType() {
         long accountAgeInMonths = ChronoUnit.MONTHS.between(accountCreationTime, LocalDateTime.now());
-
+    
         if (accountAgeInMonths >= 5) {
-            this.userType = "SuperGoldenPlus";
+            this.userType = "PlatinumMember";
         } else if (accountAgeInMonths >= 3) {
-            this.userType = "GoldenPlus";
+            this.userType = "GoldMember";
         } else if (accountAgeInMonths >= 1) {
-            this.userType = "Gold";
+            this.userType = "SilverMember";
         } else {
-            this.userType = "Standard"; // Default user type for accounts less than 1 month old
+            this.userType = "BronzeMember"; // Default user type for accounts less than 1 month old
         }
     }
     

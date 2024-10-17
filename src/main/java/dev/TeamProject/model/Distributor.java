@@ -61,13 +61,13 @@ public class Distributor {
 
         // Set distributor type based on total pickups
         if (totalPickups >= 100) {
-            this.distributorType = "SuperGoldenPlus";
+            this.distributorType = "MasterChef";
         } else if (totalPickups >= 50) {
-            this.distributorType = "GoldenPlus";
+            this.distributorType = "CulinaryExpert";
         } else if (totalPickups >= 20) {
-            this.distributorType = "Gold";
+            this.distributorType = "Foodie";
         } else {
-            this.distributorType = "Standard"; // Default user type if below 20 pickups
+            this.distributorType = "Novice"; // Default user type if below 20 pickups
         }
     }
 }
