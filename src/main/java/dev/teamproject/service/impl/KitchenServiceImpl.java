@@ -2,6 +2,7 @@ package dev.teamproject.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.teamproject.client.CallbackClientService;
 import dev.teamproject.model.Kitchen;
 import dev.teamproject.model.Rating;
 import dev.teamproject.model.TempInfo;
@@ -36,12 +37,22 @@ public class KitchenServiceImpl implements KitchenService {
 
   private final KitchenRepository  kitchenRepository;
   private final RatingRepository ratingRepository;
+  private CallbackClientService callbackClientService;
 
+  /**
+   * Constructor to autowire dependency of this bean.
+   *
+   * @param kitchenRepository kitchen Repository Bean
+   * @param ratingRepository rating Repository Bean
+   * @param callbackClientService callback client service Bean
+   */
   @Autowired
   public KitchenServiceImpl(KitchenRepository kitchenRepository,
-                            RatingRepository ratingRepository) {
+                            RatingRepository ratingRepository,
+                            CallbackClientService callbackClientService) {
     this.kitchenRepository = kitchenRepository;
     this.ratingRepository = ratingRepository;
+    this.callbackClientService = callbackClientService;
   }
 
   // Implementation of KitchenService methods will go her
@@ -52,6 +63,7 @@ public class KitchenServiceImpl implements KitchenService {
       throw new RuntimeException("Kitchen already exists with given name: " + kitchen.getName());
     }
     Kitchen saved = kitchenRepository.save(kitchen);
+    this.callbackClientService.notifyExternalService(saved);
     System.out.println("Kitchen named " + kitchen.getName() + " saved: " + saved);
     return saved;
   }
@@ -95,29 +107,29 @@ public class KitchenServiceImpl implements KitchenService {
   public Kitchen updateKitchen(Kitchen kitchen, long id) {
     Kitchen toUpdate = kitchenRepository.findByKitchenId(id)
             .orElseThrow(() -> new RuntimeException("Kitchen not exists with id: " + id));
-    if (!kitchen.getName().isEmpty() && !Objects.equals(kitchen.getName(), toUpdate.getName())) {
+    if (kitchen.getName() != null && !Objects.equals(kitchen.getName(), toUpdate.getName())) {
       toUpdate.setName(kitchen.getName());
     }
-    if (!kitchen.getAddress().isEmpty()
+    if (kitchen.getAddress() != null
             && !Objects.equals(kitchen.getAddress(), toUpdate.getAddress())) {
       toUpdate.setAddress(kitchen.getAddress());
     }
-    if (!kitchen.getContactPhone().isEmpty()
+    if (kitchen.getContactPhone() != null
             && !Objects.equals(kitchen.getContactPhone(), toUpdate.getContactPhone())) {
       toUpdate.setContactPhone(kitchen.getContactPhone());
     }
-    if (!kitchen.getAccessibilityFeatures().isEmpty()
+    if (kitchen.getAccessibilityFeatures() != null
             && !Objects.equals(kitchen.getAccessibilityFeatures(),
             toUpdate.getAccessibilityFeatures())) {
       toUpdate.setAccessibilityFeatures(kitchen.getAccessibilityFeatures());
     }
-    if (!kitchen.getOperatingHours().isEmpty()
+    if (kitchen.getOperatingHours() != null
             && !Objects.equals(kitchen.getOperatingHours(), toUpdate.getOperatingHours())) {
       toUpdate.setOperatingHours(kitchen.getOperatingHours());
     }
 
     if (kitchen.getOperationalStatus() != null
-            && kitchen.getOperationalStatus() != toUpdate.getOperationalStatus()) {
+            && !kitchen.getOperationalStatus().equals(toUpdate.getOperationalStatus())) {
       toUpdate.setOperationalStatus(kitchen.getOperationalStatus());
     }
 

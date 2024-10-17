@@ -99,7 +99,7 @@ public class KitchenController {
     // Logic to fetch kitchen details
     try {
       Optional<Kitchen> kitchen = kitchenService.getKitchenById(kitchenId);
-      return new ResponseEntity<>(kitchen, HttpStatus.NOT_FOUND);
+      return new ResponseEntity<>(kitchen, HttpStatus.OK);
     } catch (RuntimeException e) {
       return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     } catch (Exception e) {
@@ -161,6 +161,13 @@ public class KitchenController {
           @RequestBody Kitchen newKitchenDetails) {
     // Check user role
     // Logic to add a new kitchen
+    try {
+      kitchenService.saveKitchen(newKitchenDetails);
+    } catch (RuntimeException e) {
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      return new ResponseEntity<>("backend error", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     return new ResponseEntity<>("New kitchen added successfully.", HttpStatus.CREATED);
   }
 
@@ -182,12 +189,12 @@ public class KitchenController {
   // Security configuration is not implemented (TODO)
   @DeleteMapping("/kitchens/delete")
   public ResponseEntity<String> deleteKitchen(
-          @RequestBody Long id) {
+          @RequestParam Long kitchenId) {
     // Check user role
     // Logic to delete a  kitchen
     try {
-      kitchenService.deleteKitchen(id);
-      return new ResponseEntity<>("Kitchen deleted successfully.", HttpStatus.CREATED);
+      kitchenService.deleteKitchen(kitchenId);
+      return new ResponseEntity<>("Kitchen deleted successfully.", HttpStatus.OK);
     } catch (RuntimeException e) {
       return new ResponseEntity<>("Kitchen to delete is not found", HttpStatus.NOT_FOUND);
     } catch (Exception e) {
