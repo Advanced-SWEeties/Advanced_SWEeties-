@@ -1,9 +1,5 @@
 package dev.teamproject.service.impl;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Objects;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.teamproject.model.Kitchen;
@@ -14,6 +10,10 @@ import dev.teamproject.repository.RatingRepository;
 import dev.teamproject.service.KitchenService;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +38,8 @@ public class KitchenServiceImpl implements KitchenService {
   private final RatingRepository ratingRepository;
 
   @Autowired
-  public KitchenServiceImpl(KitchenRepository kitchenRepository, RatingRepository ratingRepository) {
+  public KitchenServiceImpl(KitchenRepository kitchenRepository,
+                            RatingRepository ratingRepository) {
     this.kitchenRepository = kitchenRepository;
     this.ratingRepository = ratingRepository;
   }
@@ -101,10 +102,6 @@ public class KitchenServiceImpl implements KitchenService {
             && !Objects.equals(kitchen.getAddress(), toUpdate.getAddress())) {
       toUpdate.setAddress(kitchen.getAddress());
     }
-//    if (!kitchen.getContactEmail().isEmpty()
-//            && !Objects.equals(kitchen.getContactEmail(), toUpdate.getContactEmail())) {
-//      toUpdate.setContactEmail(kitchen.getContactEmail());
-//    }
     if (!kitchen.getContactPhone().isEmpty()
             && !Objects.equals(kitchen.getContactPhone(), toUpdate.getContactPhone())) {
       toUpdate.setContactPhone(kitchen.getContactPhone());
