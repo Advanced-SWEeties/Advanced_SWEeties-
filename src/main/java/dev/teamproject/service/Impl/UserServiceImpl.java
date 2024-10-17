@@ -8,7 +8,6 @@ import dev.teamproject.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +18,6 @@ import org.springframework.web.client.RestTemplate;
  * Implementation of UserService interface that provides methods
  * to handle user-related operations like fetching user location and getting nearest kitchens.
  */
-@RequiredArgsConstructor
 @Service
 @Primary
 public class UserServiceImpl implements UserService {
