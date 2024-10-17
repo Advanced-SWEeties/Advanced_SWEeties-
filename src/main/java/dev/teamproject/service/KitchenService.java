@@ -28,5 +28,5 @@ public interface KitchenService {
   List<Kitchen> topRatedKitchens();
 
   void deleteKitchen(long id);
-  // List<TempInfo> fetchAllKitchens();
+  List<TempInfo> fetchAllKitchens();
 }
