@@ -17,6 +17,8 @@ Welcome to the **Charity Kitchen API**. This API provides information about near
 - [Add Kitchen](#add-kitchen)
 - [Delete User](#delete-user)
 
+### Note for Developers
+- we are using lombok for getter and setter methods, lombok dependency is added in the pom.xml file, but developers need to make sure the annotation processing for lombok is enabled in the IDE: go to File > Settings > Build, Execution, Deployment > Compiler > Annotation Processors and check the box for Enable annotation processing.
 ---
 
 ## Home

@@ -2,6 +2,7 @@ package dev.teamproject.service;
 
 
 import dev.teamproject.model.Kitchen;
+import dev.teamproject.model.TempInfo;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,4 +28,5 @@ public interface KitchenService {
   List<Kitchen> topRatedKitchens();
 
   void deleteKitchen(long id);
+  // List<TempInfo> fetchAllKitchens();
 }
