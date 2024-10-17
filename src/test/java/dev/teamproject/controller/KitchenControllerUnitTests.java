@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import dev.teamproject.service.UserService;
+import org.glassfish.jaxb.core.v2.TODO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -154,16 +155,15 @@ public class KitchenControllerUnitTests {
   @Order(5)
   public void getNearestKitchenTest() throws Exception {
     // precondition
-    given(userService.getUserLocation("Columbia University"))
-        .willReturn(new UserLocation(1.0, 1.0, "some place"));
+    given(userService.getUserLocation("some place")).willReturn(new UserLocation(1.0, 1.0, "some place"));
     given(kitchenService.getAllKitchens()).willReturn(List.of(kitchen));
 
     // action
-    ResultActions response = mockMvc.perform(
-        get("/api/kitchens/nearest?address={address}&count={count}",
+    ResultActions response = mockMvc.perform(get("/api/kitchens/nearest?address={address}&count={count}",
         "Columbia University", 1));
 
     // verify
-    response.andExpect(status().isOk());
+    response.andExpect(status().isOk())
+        .andDo(print());
   }
 }
