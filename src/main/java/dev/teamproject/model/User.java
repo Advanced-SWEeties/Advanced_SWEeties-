@@ -2,11 +2,13 @@ package dev.teamproject.model;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Represents a User entity in the application.
  * This class contains details of a User, including his userId, username, password, apiKey and type.
  */
+@SpringBootApplication
 public class User {
   private static Long userIdCounter = 0L; // Static variable to keep track of user IDs
   private Long userId;
@@ -66,8 +68,15 @@ public class User {
     return false;
   }
 
-  // Function to set user type based on account age in months
-  private void setUserType() {
+  /**
+   * Sets the user type based on the age of the account.
+   * The user type is determined by the number of months since the account was created:
+   * - PlatinumMember: 5 or more months
+   * - GoldMember: 3 to 4 months
+   * - SilverMember: 1 to 2 months
+   * - BronzeMember: less than 1 month
+   */
+  public void setUserType() {
     long accountAgeInMonths = ChronoUnit.MONTHS.between(accountCreationTime, LocalDateTime.now());
 
     if (accountAgeInMonths >= 5) {
