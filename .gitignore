@@ -37,3 +37,4 @@ build/
 application.properties
 
 scripts/
+db/
