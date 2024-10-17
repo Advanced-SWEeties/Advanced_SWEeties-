@@ -1,8 +1,10 @@
 package dev.teamproject.service;
 
+
 import dev.teamproject.model.Kitchen;
 import dev.teamproject.model.TempInfo;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Interface for Kitchen Service.
@@ -11,7 +13,21 @@ import java.util.List;
  * related to kitchen management.
  */
 public interface KitchenService {
-  List<Kitchen> listAllKitchens();
+  Kitchen saveKitchen(Kitchen kitchen);
+
+  List<Kitchen> getAllKitchens();
+
+  Optional<Kitchen> getKitchenById(long id);
+
+  Optional<Kitchen> getKitchenByName(String kitchenName);
+
+  Kitchen updateKitchen(Kitchen kitchen, long id);
+
+  List<Kitchen> searchKitchen(String kitchenName);
+
+  List<Kitchen> topRatedKitchens();
+
+  void deleteKitchen(long id);
 
   List<TempInfo> fetchAllKitchens();
 }
