@@ -8,10 +8,6 @@ import dev.teamproject.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
-<<<<<<< HEAD
-=======
-import lombok.RequiredArgsConstructor;
->>>>>>> 96efc67 (finished getting the nearest kitchen logic, added the new UserService and cooresponding implementation, and already populated initial kitchen data which got from the api to the Mysql server(no need to call fetchAllKitchens again unless we are reseting the DB))
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +18,6 @@ import org.springframework.web.client.RestTemplate;
  * Implementation of UserService interface that provides methods
  * to handle user-related operations like fetching user location and getting nearest kitchens.
  */
-<<<<<<< HEAD
-=======
-@RequiredArgsConstructor
->>>>>>> 96efc67 (finished getting the nearest kitchen logic, added the new UserService and cooresponding implementation, and already populated initial kitchen data which got from the api to the Mysql server(no need to call fetchAllKitchens again unless we are reseting the DB))
 @Service
 @Primary
 public class UserServiceImpl implements UserService {
@@ -124,10 +116,6 @@ public class UserServiceImpl implements UserService {
       }
       nearestKitchens.add(pq.poll());
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> 96efc67 (finished getting the nearest kitchen logic, added the new UserService and cooresponding implementation, and already populated initial kitchen data which got from the api to the Mysql server(no need to call fetchAllKitchens again unless we are reseting the DB))
     return nearestKitchens;
   }
 
