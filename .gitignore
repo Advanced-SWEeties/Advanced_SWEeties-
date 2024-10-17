@@ -32,3 +32,8 @@ build/
 ### VS Code ###
 .vscode/
 .idea/
+
+### avoid exposing keys to the public ###
+application.properties
+
+scripts/
