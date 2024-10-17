@@ -1,12 +1,13 @@
-package dev.teamproject.service.Impl;
+package dev.teamproject.service.impl;
 
-import dev.teamproject.model.*;
-import dev.teamproject.repository.*;
-import dev.teamproject.service.KitchenService; // Correct import
-import org.springframework.beans.factory.annotation.*;
+import dev.teamproject.model.Kitchen;
+import dev.teamproject.repository.KitchenRepository;
+import dev.teamproject.service.KitchenService;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 /**
  * Implementation of the KitchenService interface.
@@ -20,9 +21,10 @@ public class KitchenServiceImpl implements KitchenService {
   public KitchenServiceImpl(KitchenRepository kitchenRepository) {
     this.kitchenRepository = kitchenRepository;
   }
-    // Implementation of KitchenService methods will go her
+
+  // Implementation of KitchenService methods will go her
   @Override
-  public Kitchen saveKitchen(Kitchen kitchen){
+  public Kitchen saveKitchen(Kitchen kitchen) {
     Optional<Kitchen> toSave = kitchenRepository.findByName(kitchen.getName());
     if (toSave.isPresent()) {
       throw new RuntimeException("Kitchen already exists with given name: " + kitchen.getName());
@@ -30,7 +32,7 @@ public class KitchenServiceImpl implements KitchenService {
     Kitchen saved = kitchenRepository.save(kitchen);
     System.out.println("Kitchen named " + kitchen.getName() + " saved: " + saved);
     return saved;
-  };
+  }
 
   @Override
   public List<Kitchen> getAllKitchens() {
@@ -70,7 +72,7 @@ public class KitchenServiceImpl implements KitchenService {
   @Override
   public Kitchen updateKitchen(Kitchen kitchen, long id) {
     Kitchen toUpdate = kitchenRepository.findByKitchenId(id)
-            .orElseThrow(()-> new RuntimeException("Kitchen not exists with id: " + id));
+            .orElseThrow(() -> new RuntimeException("Kitchen not exists with id: " + id));
     if (!kitchen.getName().isEmpty() && !Objects.equals(kitchen.getName(), toUpdate.getName())) {
       toUpdate.setName(kitchen.getName());
     }

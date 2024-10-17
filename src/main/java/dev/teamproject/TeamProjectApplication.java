@@ -14,8 +14,8 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
  * Uncomment the appropriate lines to enable database support once a MySQL instance is set up.
  * </p>
  */
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-// @SpringBootApplication
+//@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@SpringBootApplication
 // @EnableMethodSecurity 
 // The corresponding Spring Security configuration is not implemented (TODO)
 public class TeamProjectApplication {

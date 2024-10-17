@@ -47,11 +47,11 @@ public class Kitchen {
 
 
 
-//  @OneToMany(mappedBy = "kitchen")
-//  private Set<Distributer> distributers;
+  //  @OneToMany(mappedBy = "kitchen")
+  //  private Set<Distributer> distributers;
 
   //  @OneToMany(mappedBy = "kitchen")
-//  private Set<Rating> Ratings;
+  // private Set<Rating> Ratings;
 
   // getters and setters are generated through @data annotation from lombok
   @Override

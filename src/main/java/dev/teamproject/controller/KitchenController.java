@@ -3,11 +3,11 @@ package dev.teamproject.controller;
 import dev.teamproject.model.Kitchen;
 import dev.teamproject.model.Rating;
 import dev.teamproject.model.User;
-
-import java.util.*;
-
-import dev.teamproject.service.*;
-import org.springframework.beans.factory.annotation.*;
+import dev.teamproject.model.WaitTimePrediction;
+import dev.teamproject.service.KitchenService;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller for managing kitchen-related endpoints.
+ * This class handles HTTP requests related to kitchen operations.
+ */
 @RestController
 @RequestMapping("/api")
 public class KitchenController {
@@ -29,28 +33,26 @@ public class KitchenController {
     this.kitchenService = kitchenService;
 
   }
+
   @GetMapping("/")
   public ResponseEntity<String> home() {
     return new ResponseEntity<>("Welcome to the Kitchen API!", HttpStatus.OK);
   }
 
-  /*
+  /**
    * Endpoint: /kitchens/nearest
    * Method: GET
-   *
    * Query Parameters:
    * String - A string indicating the address
    * count - Number of charity kitchens to return.
    * Description: Retrieves the specified number of nearest charity
    * kitchens based on the user’s geographical location.
-   *
    * Response:
    * 200 OK - Returns a list of kitchens with details such as name, address, distance,
    * rating, and accessibility features.
    * 400 Bad Request - If the parameters are invalid.
    * 500 Internal Server Error - For unexpected backend errors.
    */
-  // 1. Get Nearest Kitchens
   @GetMapping("/kitchens/nearest")
   public ResponseEntity<List<Kitchen>> getNearestKitchens(
           @RequestParam String address,
@@ -59,7 +61,7 @@ public class KitchenController {
     return new ResponseEntity<>(/* List of Kitchens, */ HttpStatus.OK);
   }
 
-  /*
+  /**
    * Endpoint: /kitchens/top-rated
    * Method: GET
    * Query Parameters:
@@ -71,7 +73,6 @@ public class KitchenController {
    * 400 Bad Request - If the parameters are invalid.
    * 500 Internal Server Error - For unexpected backend errors.
    */
-  // 2. Get Top Rated Kitchens
   @GetMapping("/kitchens/top-rated")
   public ResponseEntity<List<Kitchen>> getTopRatedKitchens(
           @RequestParam int count) {
@@ -80,7 +81,7 @@ public class KitchenController {
     return new ResponseEntity<>(kitchenService.topRatedKitchens(), HttpStatus.OK);
   }
 
-  /*
+  /**
    * Endpoint: /kitchens/details
    * Method: GET
    * Query Parameters:
@@ -106,10 +107,9 @@ public class KitchenController {
     }
   }
 
-  /*
+  /**
    * Endpoint: /kitchens/update
    * Method: PUT
-   *
    * Required Role: Super Golden Plus User or Manager
    * Request Body:
    * kitchenId - Unique identifier for the charity kitchen.
@@ -140,7 +140,7 @@ public class KitchenController {
     }
   }
 
-  /*
+  /**
    * Endpoint: /kitchens/add
    * Method: POST
    * Required Role: Super Golden Plus User or Manager
@@ -164,7 +164,7 @@ public class KitchenController {
     return new ResponseEntity<>("New kitchen added successfully.", HttpStatus.CREATED);
   }
 
-  /*
+  /**
    * Endpoint: /kitchens/id
    * Method: DELETE
    * Required Role: Super Golden Plus User or Manager

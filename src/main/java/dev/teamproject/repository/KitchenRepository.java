@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
  * <p>This repository provides methods to find kitchens by name and
  * by partial name matching.</p>
  */
-@Repository
+@Repository("kitchenRepository")
 public interface KitchenRepository extends JpaRepository<Kitchen, Long> {
   
   Optional<Kitchen> findByName(String name);

@@ -1,9 +1,9 @@
 package dev.teamproject.service;
 
 
-import dev.teamproject.model.*;
-
-import java.util.*;
+import dev.teamproject.model.Kitchen;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Interface for Kitchen Service.
@@ -13,11 +13,17 @@ import java.util.*;
  */
 public interface KitchenService {
   Kitchen saveKitchen(Kitchen kitchen);
+
   List<Kitchen> getAllKitchens();
+
   Optional<Kitchen> getKitchenById(long id);
+
   Optional<Kitchen> getKitchenByName(String kitchenName);
-  Kitchen updateKitchen(Kitchen kitchen,long id);
+
+  Kitchen updateKitchen(Kitchen kitchen, long id);
+
   List<Kitchen> searchKitchen(String kitchenName);
+
   List<Kitchen> topRatedKitchens();
 
   void deleteKitchen(long id);
