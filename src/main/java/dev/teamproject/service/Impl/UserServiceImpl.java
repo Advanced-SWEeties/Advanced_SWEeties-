@@ -116,6 +116,7 @@ public class UserServiceImpl implements UserService {
       }
       nearestKitchens.add(pq.poll());
     }
+
     return nearestKitchens;
   }
 
