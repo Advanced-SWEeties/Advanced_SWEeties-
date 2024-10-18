@@ -7,10 +7,11 @@ import static org.mockito.Mockito.when;
 import dev.teamproject.model.Kitchen;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Unit tests for the {@link KitchenEventListener} class.
@@ -21,7 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * correctly handles the event and interacts with the mocked event data.
  * </p>
  */
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class KitchenEventListenerTest {
 
   @InjectMocks

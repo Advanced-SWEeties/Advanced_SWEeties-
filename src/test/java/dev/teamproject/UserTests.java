@@ -8,10 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import dev.teamproject.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class UserTests {
+  private User user;
 
   @BeforeEach
   public void setUp() {
@@ -46,6 +45,4 @@ class UserTests {
     user.createAccount("testUser", "password123");
     assertEquals("BronzeMember", user.getUserType());
   }
-
-  public static User user;
 }
