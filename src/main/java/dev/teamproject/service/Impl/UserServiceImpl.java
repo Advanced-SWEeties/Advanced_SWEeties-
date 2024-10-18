@@ -27,6 +27,16 @@ public class UserServiceImpl implements UserService {
   private String apiKey;
   private static final double EARTH_RADIUS_KM = 6371;
 
+  private RestTemplate restTemplate = new RestTemplate();
+
+  public void setApiKey(String apiKey) {
+    this.apiKey = apiKey;
+  }
+
+  public void setRestTemplate(RestTemplate restTemplate) {
+    this.restTemplate = restTemplate;
+  }
+
   /**
    * Fetches the geographic coordinates (latitude and longitude) and the formatted address
    * for a given address string using the Google Geocoding API.
@@ -40,14 +50,18 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public UserLocation getUserLocation(String address) {
-    RestTemplate restTemplate = new RestTemplate();
+
+    if (apiKey == null) {
+      throw new IllegalArgumentException("API key has not been set");
+    }
+
     String requestUrl = "https://maps.googleapis.com/maps/api/geocode/json?address="
         + address + "&key=" + apiKey;
 
     try {
       ResponseEntity<String> response = restTemplate.getForEntity(requestUrl, String.class);
-      ObjectMapper mapper = new ObjectMapper();
 
+      ObjectMapper mapper = new ObjectMapper();
       JsonNode root = mapper.readTree(response.getBody());
       String s =  root.path("status").asText();
       JsonNode results = root.path("results");
@@ -116,7 +130,6 @@ public class UserServiceImpl implements UserService {
       }
       nearestKitchens.add(pq.poll());
     }
-
     return nearestKitchens;
   }
 

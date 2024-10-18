@@ -77,17 +77,17 @@ class UserServiceImplTest {
   @BeforeEach
   void setUp() {
     allKitchens = kitchenRepository.findAll();
-    userServiceImpl.apiKey = APIKEY;
-    userServiceImpl.restTemplate = restTemplate;
+    userServiceImpl.setApiKey(APIKEY);
+    userServiceImpl.setRestTemplate(restTemplate);
   }
 
   @Test
   public void getUserLocationApiKeyIsNullTest() {
-    String temp = userServiceImpl.apiKey;
-    userServiceImpl.apiKey = null;
+//    String temp = userServiceImpl.apiKey;
+    userServiceImpl.setApiKey(null);
 
     assertThrows(IllegalArgumentException.class, () -> userServiceImpl.getUserLocation(ADDRESS));
-    userServiceImpl.apiKey = temp;
+    userServiceImpl.setApiKey(APIKEY);
   }
 
   @Test
