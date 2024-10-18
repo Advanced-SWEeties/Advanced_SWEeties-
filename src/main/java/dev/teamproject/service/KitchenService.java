@@ -30,4 +30,6 @@ public interface KitchenService {
   void deleteKitchen(long id);
 
   List<TempInfo> fetchAllKitchens();
+
+  List<Kitchen> fetchTopRatedKitchens(int count);
 }

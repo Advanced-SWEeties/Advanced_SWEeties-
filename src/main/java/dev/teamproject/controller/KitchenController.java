@@ -92,11 +92,17 @@ public class KitchenController {
    * 500 Internal Server Error - For unexpected backend errors.
    */
   @GetMapping("/kitchens/top-rated")
-  public ResponseEntity<List<Kitchen>> getTopRatedKitchens(
+  public ResponseEntity<?> getTopRatedKitchens(
           @RequestParam int count) {
     // Logic to retrieve top-rated kitchens
-    // by Default 20 for now
-    return new ResponseEntity<>(kitchenService.topRatedKitchens(), HttpStatus.OK);
+    if (count < 0) {
+      return new ResponseEntity<>("invalid count: negative number", HttpStatus.BAD_REQUEST);
+    }
+    List<Kitchen> list =  kitchenService.fetchTopRatedKitchens(count);
+    if (list == null) {
+      return new ResponseEntity<>("No kitchens found in the Mysql DB", HttpStatus.NOT_FOUND);
+    }
+    return new ResponseEntity<>(list, HttpStatus.OK);
   }
 
   /**
