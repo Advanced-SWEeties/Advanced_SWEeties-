@@ -82,8 +82,7 @@ public class KitchenControllerUnitTests {
             .content(objectMapper.writeValueAsString(kitchen)));
 
     // verify
-    response.andDo(print())
-            .andExpect(status().isCreated())
+    response.andExpect(status().isCreated())
             .andExpect(content().string("New kitchen added successfully."));
   }
 
@@ -100,7 +99,6 @@ public class KitchenControllerUnitTests {
 
     // verify
     response.andExpect(status().isOk())
-            .andDo(print())
             .andExpect(jsonPath("$.name",
                     is(kitchen.getName())))
             .andExpect(jsonPath("$.address",
@@ -129,7 +127,6 @@ public class KitchenControllerUnitTests {
 
     // verify
     response.andExpect(status().isOk())
-            .andDo(print())
             .andExpect(content().string("Kitchen information updated successfully."));
   }
 
@@ -147,7 +144,6 @@ public class KitchenControllerUnitTests {
 
     // then - verify the output
     response.andExpect(status().isOk())
-            .andDo(print())
             .andExpect(content().string("Kitchen deleted successfully."));;
   }
 
@@ -167,7 +163,6 @@ public class KitchenControllerUnitTests {
         "Columbia University", 1));
 
     // verify
-    response.andExpect(status().isOk())
-        .andDo(print());
+    response.andExpect(status().isOk());
   }
 }
