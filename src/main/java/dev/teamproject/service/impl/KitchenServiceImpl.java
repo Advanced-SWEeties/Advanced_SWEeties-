@@ -291,4 +291,16 @@ public class KitchenServiceImpl implements KitchenService {
     }
     return tempInfos;
   }
+
+  @Override
+  public List<Kitchen> fetchTopRatedKitchens(int count) {
+    List<Kitchen> allKitchens = getAllKitchens();
+    if (allKitchens.isEmpty()) {
+      throw null;
+    }
+
+    allKitchens.sort((k1, k2) -> Double.compare(k2.getRating(), k1.getRating()));
+    int min = Math.min(count, allKitchens.size());
+    return allKitchens.subList(0, min);
+  }
 }

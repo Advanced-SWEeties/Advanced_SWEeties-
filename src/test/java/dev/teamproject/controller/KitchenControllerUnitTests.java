@@ -1,6 +1,7 @@
 package dev.teamproject.controller;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -56,6 +57,9 @@ public class KitchenControllerUnitTests {
   private ObjectMapper objectMapper;
 
   Kitchen kitchen;
+  Kitchen kitchen2;
+
+  private static final String ADDRESS = "Columbia University";
 
   /**
    *  set up a kitchen object before each test.
@@ -67,6 +71,12 @@ public class KitchenControllerUnitTests {
             .name("Kitchen1")
             .address("some place")
             .contactPhone("1234567890").build();
+
+    kitchen2 = Kitchen.builder()
+            .kitchenId(2L)
+            .name("Kitchen2")
+            .address("116 street")
+            .contactPhone("987654321").build();
   }
 
   //Post Controller
@@ -147,23 +157,135 @@ public class KitchenControllerUnitTests {
             .andExpect(content().string("Kitchen deleted successfully."));;
   }
 
-
-  //TODO nearestKitchen and topRatedKitchen
   @Test
   @Order(5)
-  public void getNearestKitchenTest() throws Exception {
+  public void getNearestKitchensInvalidAddressTest() throws Exception {
+    // action
+    ResultActions response = mockMvc.perform(
+        get("/api/kitchens/nearest?address={address}&count={count}",
+        "", 1));
+
+    // verify
+    response.andExpect(status().isBadRequest())
+        .andExpect(content().string("Invalid parameters"));
+  }
+
+  @Test
+  @Order(6)
+  public void getNearestKitchensNegativeCountTest() throws Exception {
+    // action
+    ResultActions response = mockMvc.perform(
+        get("/api/kitchens/nearest?address={address}&count={count}",
+            ADDRESS, -1));
+
+    // verify
+    response.andExpect(status().isBadRequest())
+        .andExpect(content().string("Invalid parameters"));
+  }
+
+  @Test
+  @Order(7)
+  public void getNearKitchensNoKitchensFoundTest() throws Exception {
     // precondition
-    given(userService.getUserLocation("Columbia University"))
-        .willReturn(new UserLocation(1.0, 1.0, "some place"));
-    given(kitchenService.getAllKitchens()).willReturn(List.of(kitchen));
+    given(kitchenService.getAllKitchens()).willReturn(null);
 
     // action
     ResultActions response = mockMvc.perform(
         get("/api/kitchens/nearest?address={address}&count={count}",
-        "Columbia University", 1));
+            ADDRESS, 1));
+
+    // verify
+    response.andExpect(status().isNotFound())
+        .andExpect(content().string("No kitchens found in the Mysql DB"));
+  }
+
+  @Test
+  @Order(8)
+  public void getNearKitchensNoKitchensFoundTest2() throws Exception {
+    // precondition
+    given(userService.getNearestKitchens(ADDRESS, kitchenService.getAllKitchens(), 1))
+        .willReturn(null);
+
+    // action
+    ResultActions response = mockMvc.perform(
+        get("/api/kitchens/nearest?address={address}&count={count}",
+            ADDRESS, 1));
+
+    // verify
+    response.andExpect(status().isNotFound())
+        .andExpect(content().string("Invalid address"));
+  }
+
+  @Test
+  @Order(9)
+  public void getNearKitchensTest() throws Exception {
+    // precondition
+    given(kitchenService.getAllKitchens())
+        .willReturn(List.of(kitchen, kitchen2));
+    given(userService.getNearestKitchens(ADDRESS, List.of(kitchen, kitchen2), 2))
+        .willReturn(List.of(kitchen, kitchen2));
+
+    // action
+    ResultActions response = mockMvc.perform(
+        get("/api/kitchens/nearest?address={address}&count={count}",
+            ADDRESS, 2));
 
     // verify
     response.andExpect(status().isOk())
-        .andDo(print());
+        .andExpect(content().string(containsString("Kitchen1")))
+        .andExpect(content().string(containsString("some place")))
+        .andExpect(content().string(containsString("Kitchen2")))
+        .andExpect(content().string(containsString("some place2")));
   }
+
+  @Test
+  @Order(10)
+  public void getTopRatedKitchensInvalidCountTest() throws Exception {
+    // action
+    ResultActions response = mockMvc.perform(
+        get("/api/kitchens/top-rated?count={count}",
+            -1));
+
+    // verify
+    response.andExpect(status().isBadRequest())
+        .andExpect(content().string("invalid count: negative number"));
+  }
+
+  @Test
+  @Order(11)
+  public void getTopRatedKitchensNoKitchensFoundTest() throws Exception {
+    // precondition
+    given(kitchenService.fetchTopRatedKitchens(10)).willReturn(null);
+
+    // action
+    ResultActions response = mockMvc.perform(
+        get("/api/kitchens/top-rated?count={count}",
+            10));
+
+    // verify
+    response.andExpect(status().isNotFound())
+        .andExpect(content().string("No kitchens found in the Mysql DB"));
+  }
+
+  @Test
+  @Order(12)
+  public void getTopRatedKitchensTest() throws Exception {
+    // precondition
+    given(kitchenService.fetchTopRatedKitchens(2))
+        .willReturn(List.of(kitchen, kitchen2));
+
+    // action
+    ResultActions response = mockMvc.perform(
+        get("/api/kitchens/top-rated?count={count}",
+            2));
+
+    // verify
+    response.andExpect(status().isOk())
+        .andExpect(content().string(containsString("Kitchen1")))
+        .andExpect(content().string(containsString("some place")))
+        .andExpect(content().string(containsString("Kitchen2")))
+        .andExpect(content().string(containsString("116 street")));
+  }
+
+
 }
