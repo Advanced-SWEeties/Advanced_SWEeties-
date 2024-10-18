@@ -234,6 +234,9 @@ Once the application is running, you can access the API at `http://localhost:808
 ## GCloud Instance 
 - Currently, the project requires manual deployment to GCP Instance. We configured our GCP App Engine according to the class instructions. As of October 18, we have an instance running. The instance is reachable at https://advancedsweeties.uk.r.appspot.com/api/.
 
+## Geocoding API
+- We are using the Google Geocoding API to convert addresses to latitude and longitude coordinates. The API key is stored in the `application.properties` file. We implemented a service class to handle the API requests and responses. For the full implementation, please refer to the service/impl/KitchenServiceImpl (method: fetchAllKitchens). For the full documentation of the Geocoding API, please visit [here](https://developers.google.com/maps/documentation/geocoding/overview).  
+
 ## License
 
 This project is licensed under the MIT License.
