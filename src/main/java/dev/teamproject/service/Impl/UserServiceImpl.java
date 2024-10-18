@@ -173,4 +173,23 @@ public class UserServiceImpl implements UserService {
     userRepository.save(user); // Assuming you have a method in UserRepository
   }
 
+  /**
+   * Authenticates user credentials.
+   *
+   * @param username the username of the user
+   * @param password the password of the user
+   * @return an Optional containing the User if credentials are valid, otherwise empty.
+   */
+  @Override
+  public Optional<User> authenticate(String username, String password) {
+    Optional<User> userOpt = userRepository.findByUsername(username); 
+    if (userOpt.isPresent()) {
+      User user = userOpt.get();
+      // Validate the password (assuming you have a method to check password)
+      if (user.getPassword().equals(password)) { // Use hashed password comparison in production
+        return Optional.of(user);
+      }
+    }
+    return Optional.empty();
+  }
 }

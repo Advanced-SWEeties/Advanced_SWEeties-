@@ -66,4 +66,39 @@ public class UserController {
         HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  /**
+   * Endpoint: /api/users/login
+   * Method: POST
+   * Description: Authenticates user credentials and returns an API key for session management.
+   * Response:
+   * 200 OK - Returns API key and user details.
+   * 401 Unauthorized - If credentials are incorrect.
+   * 500 Internal Server Error - For unexpected backend errors.
+   */
+  @PostMapping("/login")
+  public ResponseEntity<Map<String, Object>> 
+      loginUser(@RequestBody Map<String, String> credentials) {
+    String username = credentials.get("username");
+    String password = credentials.get("password");
+
+    try {
+      Optional<User> userOpt = userService.authenticate(username, password);
+      if (userOpt.isPresent()) {
+        User user = userOpt.get();
+        //String apiKey = userService.generateApiKey(user); 
+        String apiKey = "random12345";
+        Map<String, Object> response = Map.of(
+            "apiKey", apiKey,
+            "user", user
+        );
+        return new ResponseEntity<>(response, HttpStatus.OK);
+      } else {
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>(Map.of("error", "Unexpected error: " + e.getMessage()), 
+        HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

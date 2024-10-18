@@ -21,4 +21,5 @@ public interface UserService {
 
   void saveUser(User user); // New method to save a user
 
+  Optional<User> authenticate(String username, String password);
 }
