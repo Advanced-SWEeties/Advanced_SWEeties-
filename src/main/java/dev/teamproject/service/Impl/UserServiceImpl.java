@@ -3,16 +3,21 @@ package dev.teamproject.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.teamproject.model.Kitchen;
+import dev.teamproject.model.User;
 import dev.teamproject.model.UserLocation;
+import dev.teamproject.repository.UserRepository;
 import dev.teamproject.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.PriorityQueue;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
 
 /**
  * Implementation of UserService interface that provides methods
@@ -150,5 +155,22 @@ public class UserServiceImpl implements UserService {
     return EARTH_RADIUS_KM * c;
   }
 
+
+  private final UserRepository userRepository; // Assuming you have a UserRepository
+  
+  @Autowired
+  public UserServiceImpl(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
+
+  @Override
+  public Optional<User> getUserById(Long userId) {
+    return userRepository.findById(userId); // Assuming you have a method in UserRepository
+  }
+
+  @Override
+  public void saveUser(User user) {
+    userRepository.save(user); // Assuming you have a method in UserRepository
+  }
 
 }
