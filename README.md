@@ -212,6 +212,9 @@ Once the application is running, you can access the API at `http://localhost:808
 
 ---
 
+## GCloud Instance 
+- Currently, the project requires manual deployment to GCP Instance. We configured our GCP App Engine according to the class instructions. As of October 18, we have an instance running. The instance is reachable at https://advancedsweeties.uk.r.appspot.com/api/.
+
 ## License
 
 This project is licensed under the MIT License.
