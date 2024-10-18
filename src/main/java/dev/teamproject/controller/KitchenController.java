@@ -5,6 +5,7 @@ import dev.teamproject.model.Rating;
 import dev.teamproject.model.User;
 import dev.teamproject.model.WaitTimePrediction;
 import dev.teamproject.service.KitchenService;
+import dev.teamproject.service.UserService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +28,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class KitchenController {
   private final KitchenService kitchenService;
+  private final UserService userService;
 
   @Autowired
-  public KitchenController(KitchenService kitchenService) {
+  public KitchenController(KitchenService kitchenService, UserService userService) {
     this.kitchenService = kitchenService;
-
+    this.userService = userService;
   }
 
   @GetMapping("/")
@@ -44,7 +46,8 @@ public class KitchenController {
    * Method: GET
    * Query Parameters:
    * String - A string indicating the address
-   * count - Number of charity kitchens to return.
+   * count - Number of charity kitchens to return, if exceed the current number of
+   * kitchens, only return all kitchens available.
    * Description: Retrieves the specified number of nearest charity
    * kitchens based on the user’s geographical location.
    * Response:
@@ -54,11 +57,26 @@ public class KitchenController {
    * 500 Internal Server Error - For unexpected backend errors.
    */
   @GetMapping("/kitchens/nearest")
-  public ResponseEntity<List<Kitchen>> getNearestKitchens(
+  public ResponseEntity<?> getNearestKitchens(
           @RequestParam String address,
           @RequestParam int count) {
+
+    if (address == null || address.isEmpty() || count < 0) {
+      return new ResponseEntity<>("Invalid parameters", HttpStatus.BAD_REQUEST);
+    }
+
     // Logic to retrieve nearest kitchens
-    return new ResponseEntity<>(/* List of Kitchens, */ HttpStatus.OK);
+    List<Kitchen> allKitchens = kitchenService.getAllKitchens();
+    if (allKitchens == null) {
+      return new ResponseEntity<>("No kitchens found in the Mysql DB", HttpStatus.NOT_FOUND);
+    }
+
+    List<Kitchen> nearestKitchens = userService.getNearestKitchens(address, allKitchens, count);
+    if (nearestKitchens == null) {
+      return new ResponseEntity<>("Invalid address", HttpStatus.NOT_FOUND);
+    }
+
+    return new ResponseEntity<>(nearestKitchens, HttpStatus.OK);
   }
 
   /**

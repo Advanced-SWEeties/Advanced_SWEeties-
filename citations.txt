@@ -1,0 +1,2 @@
+1. https://www.geeksforgeeks.org/haversine-formula-to-find-distance-between-two-points-on-a-sphere/
+    Used the resource here to understand the Haversine formula and how to calculate the distance between two points on a sphere.

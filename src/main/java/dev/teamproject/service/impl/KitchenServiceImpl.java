@@ -156,10 +156,10 @@ public class KitchenServiceImpl implements KitchenService {
    * Fetches soup kitchens in New York City from the Google Places API and saves
    * them to the database. This method sends a request to the Google Places API
    * to retrieve information about soup kitchens in New York City.
-   * For each kitchen, it also saves user reviews as {@link Rating}
-   * entities with randomly generated user IDs.</p>
+   * The response is processed and saved to the database. So do not call this method
+   * again unless we are resetting the database. (otherwise, we will have duplicate data)
    *
-   * @return a list of {@link TempInfo} objects containing information about the retrieved kitchens.
+   * @return a list of TempInfo objects containing information about the retrieved kitchens.
    * @throws RuntimeException if there is an issue with fetching or processing the data.
    */
   @Override

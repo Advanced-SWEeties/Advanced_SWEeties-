@@ -15,8 +15,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.teamproject.model.Kitchen;
+import dev.teamproject.model.UserLocation;
 import dev.teamproject.service.KitchenService;
+import dev.teamproject.service.UserService;
+import java.util.List;
 import java.util.Optional;
+import org.glassfish.jaxb.core.v2.TODO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -44,6 +48,9 @@ public class KitchenControllerUnitTests {
 
   @MockBean
   private KitchenService kitchenService;
+
+  @MockBean
+  private UserService userService;
 
   @Autowired
   private ObjectMapper objectMapper;
@@ -143,5 +150,24 @@ public class KitchenControllerUnitTests {
             .andDo(print())
             .andExpect(content().string("Kitchen deleted successfully."));;
   }
+
+
+  //TODO nearestKitchen and topRatedKitchen
+  @Test
+  @Order(5)
+  public void getNearestKitchenTest() throws Exception {
+    // precondition
+    given(userService.getUserLocation("Columbia University"))
+        .willReturn(new UserLocation(1.0, 1.0, "some place"));
+    given(kitchenService.getAllKitchens()).willReturn(List.of(kitchen));
+
+    // action
+    ResultActions response = mockMvc.perform(
+        get("/api/kitchens/nearest?address={address}&count={count}",
+        "Columbia University", 1));
+
+    // verify
+    response.andExpect(status().isOk())
+        .andDo(print());
+  }
 }
-//TODO nearestKitchen and topRatedKitchen
