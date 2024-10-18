@@ -235,7 +235,7 @@ public class KitchenControllerUnitTests {
         .andExpect(content().string(containsString("Kitchen1")))
         .andExpect(content().string(containsString("some place")))
         .andExpect(content().string(containsString("Kitchen2")))
-        .andExpect(content().string(containsString("some place2")));
+        .andExpect(content().string(containsString("116 street")));
   }
 
   @Test
