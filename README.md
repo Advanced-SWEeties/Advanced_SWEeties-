@@ -5,6 +5,25 @@
 
 Welcome to the **Charity Kitchen API**. This API provides information about nearby charity kitchens and allows users to interact with the system by retrieving kitchen details, predicting waiting times, submitting ratings, and managing users.
 
+## How to set up the project
+The whole repository is developed and tested on Mac book, so the following instructions are for Mac users. If you are using Windows or Linux, you may need to adjust the commands! Before running the project, please make sure the following is installed on your device.
+- JDK17: All functions is tested on JDK17 and it is highly recommended that you use the same version! You can check your current version by running `java -version` in the terminal. For installation, you can visit [here](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html).
+- Maven 3.9.5: You can check your current version by running `mvn -version` in the terminal. For installation, you can visit [here](https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.5/).
+
+### Steps to run the project
+After cloning the repository, you can run the project by following the steps below:
+- Compile the project: You should first compile it with
+```
+mvn clean compile
+```
+This will compile the project and download all the dependencies required for the project.
+- Run the project: You can run the project by running the following command:
+```
+mvn spring-boot:run
+```
+- Go to your browser and type `http://localhost:8080/api/` to see the welcome message of the API.
+- You can type `http://localhost:8080/api/kitchens/nearest?address=columbia%20university&count=4` to see the nearest kitchens to Columbia University. (This is our sample query, you can change the address and count as you wish!)
+
 ### Table of Contents for API
 - [Home](#home)
 - [Get Nearest Kitchens](#get-nearest-kitchens)
