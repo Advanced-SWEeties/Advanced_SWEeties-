@@ -64,7 +64,6 @@ public class KitchenServiceImpl implements KitchenService {
     }
     Kitchen saved = kitchenRepository.save(kitchen);
     this.callbackClientService.notifyExternalService(saved);
-    System.out.println("Kitchen named " + kitchen.getName() + " saved: " + saved);
     return saved;
   }
 
@@ -79,7 +78,6 @@ public class KitchenServiceImpl implements KitchenService {
     if (toGet.isEmpty()) {
       throw new RuntimeException("Kitchen not exists with given id: " + id);
     }
-    System.out.println("Kitchen with id " + id + " is got.");
     return toGet;
   }
 
@@ -89,7 +87,6 @@ public class KitchenServiceImpl implements KitchenService {
     if (kitchens.isEmpty()) {
       throw new RuntimeException("All kitchen does not contain the given name: " + kitchenName);
     }
-    System.out.println("List of Kitchens with name " + kitchenName + " are got.");
     return kitchens;
   }
 
@@ -99,7 +96,6 @@ public class KitchenServiceImpl implements KitchenService {
     if (toGet.isEmpty()) {
       throw new RuntimeException("Kitchen not exists with given name: " + kitchenName);
     }
-    System.out.println("Kitchen with name " + kitchenName + " is got.");
     return toGet;
   }
 
@@ -144,7 +140,6 @@ public class KitchenServiceImpl implements KitchenService {
       throw new RuntimeException("Kitchen not exists with given id: " + id);
     }
     kitchenRepository.deleteById(id);
-    System.out.println("Kitchen with id " + id + " is deleted.");
   }
 
   @Override
