@@ -83,7 +83,7 @@ class UserServiceImplTest {
 
   @Test
   public void getUserLocationApiKeyIsNullTest() {
-//    String temp = userServiceImpl.apiKey;
+    //  String temp = userServiceImpl.apiKey;
     userServiceImpl.setApiKey(null);
 
     assertThrows(IllegalArgumentException.class, () -> userServiceImpl.getUserLocation(ADDRESS));
