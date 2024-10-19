@@ -29,11 +29,12 @@ public class TeamProjectApplication {
   public static void main(String[] args) {
     SpringApplication.run(TeamProjectApplication.class, args);
   }
-
+  
   /**
    * RestTemplate bean configuration.
    * Provides a centralized RestTemplate instance for the entire application.
    */
+
   @Bean
   public RestTemplate restTemplate() {
     return new RestTemplate();

@@ -32,12 +32,12 @@ import org.springframework.web.client.RestTemplate;
 @Primary
 @Service
 public class KitchenServiceImpl implements KitchenService {
-  @Value("${google.map.key}")
-  String apiKey;
 
   private final KitchenRepository  kitchenRepository;
   private final RatingRepository ratingRepository;
   private CallbackClientService callbackClientService;
+  private final RestTemplate restTemplate;
+  private final String apiKey;
 
   /**
    * Constructor to autowire dependency of this bean.
@@ -49,10 +49,14 @@ public class KitchenServiceImpl implements KitchenService {
   @Autowired
   public KitchenServiceImpl(KitchenRepository kitchenRepository,
                             RatingRepository ratingRepository,
-                            CallbackClientService callbackClientService) {
+                            CallbackClientService callbackClientService,
+                            RestTemplate restTemplate, 
+                            @Value("${google.map.key}") String apiKey) {
     this.kitchenRepository = kitchenRepository;
     this.ratingRepository = ratingRepository;
     this.callbackClientService = callbackClientService;
+    this.restTemplate = restTemplate;
+    this.apiKey = apiKey;
   }
 
   // Implementation of KitchenService methods will go her
@@ -167,11 +171,11 @@ public class KitchenServiceImpl implements KitchenService {
     String requestUrl = "https://places.googleapis.com/v1/places:searchText";
     String body = "{ \"textQuery\": \"soup kitchen in New York City\", \"regionCode\": \"US\" }";
     HttpEntity<String> request = new HttpEntity<>(body, headers);
-    RestTemplate template = new RestTemplate();
     List<TempInfo> tempInfos = new ArrayList<>();
 
     try {
-      ResponseEntity<String> response = template.postForEntity(requestUrl, request, String.class);
+      ResponseEntity<String> response = 
+          restTemplate.postForEntity(requestUrl, request, String.class);
       ObjectMapper mapper = new ObjectMapper();
       JsonNode root = mapper.readTree(response.getBody());
       if (root.size() == 0) {
