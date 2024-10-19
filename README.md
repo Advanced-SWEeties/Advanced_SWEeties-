@@ -259,6 +259,16 @@ We have run the tests and generated a coverage report!
 <img width="1042" alt="image" src="https://github.com/user-attachments/assets/05255ac4-337e-42bb-b457-46d178f1048b">
   - Get details
 <img width="1048" alt="image" src="https://github.com/user-attachments/assets/5bdd339c-091f-4b5c-b7e1-b1a70e608d33">
+  - Update
+<img width="1043" alt="image" src="https://github.com/user-attachments/assets/e37c4cac-7fea-46a9-af33-cf05e87dc9da">
+  - Add
+<img width="1043" alt="image" src="https://github.com/user-attachments/assets/724b1bc3-c464-40a9-91bf-b00e8ea84315">
+  - When we add again:
+<img width="1044" alt="image" src="https://github.com/user-attachments/assets/99067ffd-27d2-4646-b2a2-7928149206b1">
+
+  - Delete
+<img width="1042" alt="image" src="https://github.com/user-attachments/assets/acbfdcaf-739c-4574-8016-f9adf4ff000b">
+
 
 
 
