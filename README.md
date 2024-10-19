@@ -242,8 +242,34 @@ mvn clean verify
 
 After running the tests, you can view the code coverage report in the `target/site/jacoco/index.html` file.
 
+### Coverage report
+We have run the tests and generated a coverage report!
+<img width="1242" alt="image" src="https://github.com/user-attachments/assets/3e250131-619f-453e-8eed-db11e3eeb7ed">
+
+
 ### Our api test results
 - We have tested our API using curl and Bruno. They are pretty much the same, so for simplicity, we will only show bruno test results. You can find the curl commands below and test the results on your local machine.
+
+- Bruno tests
+  - Hello world for our api:
+<img width="1039" alt="image" src="https://github.com/user-attachments/assets/844f815e-962b-4b25-b2ef-1b239b6f4a06">
+  - Nearest kitchen
+<img width="1042" alt="image" src="https://github.com/user-attachments/assets/f7b8ce6d-df21-4ecc-861e-cc7078eb6a42">
+  - Top rated
+<img width="1042" alt="image" src="https://github.com/user-attachments/assets/05255ac4-337e-42bb-b457-46d178f1048b">
+  - Get details
+<img width="1048" alt="image" src="https://github.com/user-attachments/assets/5bdd339c-091f-4b5c-b7e1-b1a70e608d33">
+  - Update
+<img width="1043" alt="image" src="https://github.com/user-attachments/assets/e37c4cac-7fea-46a9-af33-cf05e87dc9da">
+  - Add
+<img width="1043" alt="image" src="https://github.com/user-attachments/assets/724b1bc3-c464-40a9-91bf-b00e8ea84315">
+  - When we add again:
+<img width="1044" alt="image" src="https://github.com/user-attachments/assets/99067ffd-27d2-4646-b2a2-7928149206b1">
+
+  - Delete
+<img width="1042" alt="image" src="https://github.com/user-attachments/assets/acbfdcaf-739c-4574-8016-f9adf4ff000b">
+
+
 
 
 - curl command for testing the nearest kitchens:
@@ -263,7 +289,6 @@ curl -G 'https://advancedsweeties.uk.r.appspot.com/api/kitchens/top-rated' --dat
 curl -X GET 'https://advancedsweeties.uk.r.appspot.com/api/kitchens/details?kitchen_id=9'
 ```
 For update, add, and delete kitchen, we will not provide curl commands since it may violate our database.
-# Add kitchen
 
 ---
 
