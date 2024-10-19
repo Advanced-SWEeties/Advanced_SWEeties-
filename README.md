@@ -29,7 +29,6 @@ mvn spring-boot:run
 - [Get Nearest Kitchens](#get-nearest-kitchens)
 - [Get Top Rated Kitchens](#get-top-rated-kitchens)
 - [Get Kitchen Details](#get-kitchen-details)
-- [Predict Waiting Times](#predict-waiting-times)
 - [Submit Rating](#submit-rating)
 - [User Login](#user-login)
 - [Update Kitchen Info](#update-kitchen-info)
@@ -59,9 +58,8 @@ mvn spring-boot:run
 
 **Response**:
 - `200 OK`: Returns a list of kitchens with details such as name, address, distance, rating, and accessibility features.
-- `400 Bad Request`: If the parameters are invalid.
+- `404 Not Found`: If no kitchens are found in the database.
 - `500 Internal Server Error`: For unexpected backend errors.
-
 ---
 
 ## Get Top Rated Kitchens
@@ -92,7 +90,7 @@ mvn spring-boot:run
 
 ---
 
-## Predict Waiting Times
+## Predict Waiting Times (not implemented yet)
 ### `GET /api/kitchens/wait-times`
 **Description**: Uses machine learning models to predict average waiting times based on historical data.
 
@@ -167,8 +165,8 @@ mvn spring-boot:run
 
 **Response**:
 - `200 OK`: Kitchen information updated successfully.
-- `403 Forbidden`: If the user does not have sufficient privileges.
-- `404 Not Found`: If `kitchen_id` does not exist.
+- `403 Forbidden`: If the user does not have sufficient privileges. (Not implemented yet)
+- `404 Not Found`: If `kitchen_id` does not exist. 
 - `500 Internal Server Error`: For unexpected backend errors.
 
 ---
@@ -194,7 +192,8 @@ mvn spring-boot:run
 
 **Response**:
 - `201 Created`: New kitchen added successfully.
-- `403 Forbidden`: If the user does not have sufficient privileges.
+- `403 Forbidden`: If the user does not have sufficient privileges. (Not implemented yet)
+- `404 Not Found`: If `kitchen_id` does not exist.
 - `500 Internal Server Error`: For unexpected backend errors.
 
 ---
@@ -210,7 +209,8 @@ mvn spring-boot:run
 
 **Response**:
 - `200 OK`: User deleted successfully.
-- `403 Forbidden`: If the user does not have sufficient privileges.
+- `403 Forbidden`: If the user does not have sufficient privileges. (Not implemented yet)
+- `404 Not Found`: If `user_id` does not exist.
 - `500 Internal Server Error`: For unexpected backend errors.
 
 ---
@@ -231,8 +231,47 @@ Once the application is running, you can access the API at `http://localhost:808
 
 ---
 
+## Testing the Application
+
+We have integrated unit tests for the application and are using JACOCO for code coverage reports. To run the tests, use the following command:
+
+```bash
+# Run the tests
+mvn clean verify
+```
+
+After running the tests, you can view the code coverage report in the `target/site/jacoco/index.html` file.
+
+### Our api test results
+- We have tested our API using curl and Bruno. They are pretty much the same, so for simplicity, we will only show bruno test results. You can find the curl commands below and test the results on your local machine.
+
+
+- curl command for testing the nearest kitchens:
+```bash
+# Get nearest kitchens
+# https://advancedsweeties.uk.r.appspot.com/api/kitchens/nearest?address=columbia%20university&count=4
+curl -G 'https://advancedsweeties.uk.r.appspot.com/api/kitchens/nearest' --data-urlencode 'address=columbia university' --data-urlencode 'count=4'
+```
+```bash
+# Get top rated kitchens
+# https://advancedsweeties.uk.r.appspot.com/api/kitchens/top-rated?count=10
+curl -G 'https://advancedsweeties.uk.r.appspot.com/api/kitchens/top-rated' --data-urlencode 'count=10'
+```
+```bash
+# Get kitchen details
+# https://advancedsweeties.uk.r.appspot.com/api/kitchens/details?kitchen_id=9
+curl -X GET 'https://advancedsweeties.uk.r.appspot.com/api/kitchens/details?kitchen_id=9'
+```
+For update, add, and delete kitchen, we will not provide curl commands since it may violate our database.
+# Add kitchen
+
+---
+
 ## GCloud Instance 
 - Currently, the project requires manual deployment to GCP Instance. We configured our GCP App Engine according to the class instructions. As of October 18, we have an instance running. The instance is reachable at https://advancedsweeties.uk.r.appspot.com/api/.
+
+## Geocoding API
+- We are using the Google Geocoding API to convert addresses to latitude and longitude coordinates. The API key is stored in the `application.properties` file. We implemented a service class to handle the API requests and responses. For the full implementation, please refer to the service/impl/KitchenServiceImpl (method: fetchAllKitchens). For the full documentation of the Geocoding API, please visit [here](https://developers.google.com/maps/documentation/geocoding/overview).  
 
 ## License
 
