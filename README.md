@@ -125,7 +125,7 @@ mvn spring-boot:run
 
 ---
 
-## User Login
+## User Login (Not implemented yet)
 ### `POST /api/users/login`
 **Description**: Authenticates user credentials and returns an API key for session management.
 
@@ -198,7 +198,7 @@ mvn spring-boot:run
 
 ---
 
-## Delete User
+## Delete User (Not implemented yet)
 ### `DELETE /api/users/delete`
 **Required Role**: `MANAGER`
 
