@@ -27,6 +27,7 @@ import dev.teamproject.repository.RatingRepository;
 import dev.teamproject.service.impl.KitchenServiceImpl;
 import java.util.List;
 import java.util.Optional;
+import org.hibernate.dialect.SybaseASEDialect;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -36,6 +37,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -53,6 +57,9 @@ public class KitchenServiceUnitTests {
   private KitchenRepository kitchenRepository;
 
   @Mock
+  private RatingRepository ratingRepository;
+
+  @Mock
   private CallbackClientService callbackClientService;
 
   @Mock
@@ -62,6 +69,9 @@ public class KitchenServiceUnitTests {
   private KitchenServiceImpl kitchenService;
 
   private Kitchen kitchen;
+  
+  @Value("${google.map.key}")
+  private String apiKey;
 
   /**
    * set ip a kitchen object before each test.
@@ -406,6 +416,90 @@ public class KitchenServiceUnitTests {
 
     assertTrue(exception.getMessage().contains("Kitchen not exists with given id: " 
         + nonExistentKitchenId));
+  }
+
+  @Test
+  public void testFetchAllKitchens() {
+    
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+    headers.add("X-Goog-Api-Key", null);
+    headers.add("X-Goog-FieldMask", "*");
+
+    String requestUrl = "https://places.googleapis.com/v1/places:searchText";
+    String requestBody = 
+        "{ \"textQuery\": \"soup kitchen in New York City\", \"regionCode\": \"US\" }";
+    HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+
+    String jsonResponse = """
+        {
+          "places": [
+            {
+              "id": 10,
+              "displayName": {
+                "text": "Community Kitchen-West Harlem"
+              },
+              "formattedAddress": "252 W 116th St, New York, NY 10026",
+              "nationalPhoneNumber": "(212) 665-9082",
+              "rating": 4.5,
+              "businessStatus": "Operational",
+              "location": {
+                "latitude": 40.8039429,
+                "longitude": -73.954989
+              },
+              "regularOpeningHours": {
+                "weekdayDescriptions": [
+                  "Monday: Closed",
+                  "Tuesday: 10:00 AM – 6:00 PM",
+                  "Wednesday: 10:00 AM – 6:00 PM",
+                  "Thursday: 10:00 AM – 6:00 PM",
+                  "Friday: 10:00 AM – 6:00 PM",
+                  "Saturday: 11:00 AM – 2:00 PM",
+                  "Sunday: Closed"
+                ]
+              },
+              "accessibilityOptions": {
+                "wheelchairAccessibleParking": true,
+                "wheelchairAccessibleRestroom": true,
+                "wheelchairAccessibleSeating": true,
+                "wheelchairAccessibleEntrance": true
+              },
+              "reviews": [
+                {
+                  "authorAttribution": {
+                    "displayName": "None",
+                    "uri": "None"
+                  },
+                  "rating": "None",
+                  "text": {
+                    "text": "None"
+                  },
+                  "publishTime": "None",
+                  "relativePublishTimeDescription": "None"
+                }
+              ]
+            }
+          ]
+        }
+        """;
+      
+
+
+    ResponseEntity<String> mockResponse = new ResponseEntity<>(jsonResponse, HttpStatus.OK);
+
+    given(restTemplate.postForEntity(anyString(), any(), eq(String.class)))
+        .willReturn(mockResponse);
+
+
+    // Execute the service method
+    List<TempInfo> results = kitchenService.fetchAllKitchens();
+    System.out.println("In testFetchAllKitchens: " + results);
+    // Assertions
+    assertNotNull(results);
+    assertFalse(results.isEmpty());
+      
+    TempInfo firstResult = results.get(0);
+    assertEquals("Community Kitchen-West Harlem", firstResult.getDisplayName());
   }
   //TODO top rated restaurant and fetchAllKitchens
 }
