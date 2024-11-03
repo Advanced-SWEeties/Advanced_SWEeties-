@@ -67,7 +67,7 @@ public class KitchenController {
 
     // Logic to retrieve nearest kitchens
     List<Kitchen> allKitchens = kitchenService.getAllKitchens();
-    if (allKitchens == null) {
+    if (allKitchens == null || allKitchens.isEmpty()) {
       return new ResponseEntity<>("No kitchens found in the Mysql DB", HttpStatus.NOT_FOUND);
     }
 
