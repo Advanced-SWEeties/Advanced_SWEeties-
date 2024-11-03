@@ -1,12 +1,13 @@
 package dev.teamproject.controller;
 
 import dev.teamproject.model.Kitchen;
-import dev.teamproject.model.Rating;
-import dev.teamproject.model.User;
-import dev.teamproject.model.WaitTimePrediction;
+import dev.teamproject.model.UserLocation;
 import dev.teamproject.service.KitchenService;
+import dev.teamproject.service.OpenAIService;
 import dev.teamproject.service.UserService;
+
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,16 +30,34 @@ import org.springframework.web.bind.annotation.RestController;
 public class KitchenController {
   private final KitchenService kitchenService;
   private final UserService userService;
+  private final OpenAIService openAIService;
 
   @Autowired
-  public KitchenController(KitchenService kitchenService, UserService userService) {
+  public KitchenController(KitchenService kitchenService, UserService userService, OpenAIService openAIService) {
     this.kitchenService = kitchenService;
     this.userService = userService;
+    this.openAIService = openAIService;
   }
 
   @GetMapping("/")
   public ResponseEntity<String> home() {
     return new ResponseEntity<>("Welcome to the Kitchen API!", HttpStatus.OK);
+  }
+
+  // only return top3 recommended kitchens
+  // !!!!! 重要:  可以加入review 的content 进入recommendation 的逻辑里面
+  @GetMapping("/kitchens/recommendation")
+  public ResponseEntity<Map<String,String>> getKitchenRecommendation() {
+
+    String location = "Columbia University";
+    String disabilityStatus = "disabled";
+    String mealHours = "3pm";
+    UserLocation userLocation = userService.getUserLocation(location);
+    List<Kitchen> allKitchens = kitchenService.getAllKitchens();
+
+    Map response = openAIService.getKitchenRecommendation(allKitchens, userLocation, disabilityStatus, mealHours);
+
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   /**
