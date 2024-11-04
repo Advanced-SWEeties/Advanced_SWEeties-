@@ -3,21 +3,29 @@ package dev.teamproject.controller;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.teamproject.model.Kitchen;
+import dev.teamproject.model.UserLocation;
 import dev.teamproject.service.KitchenService;
+import dev.teamproject.service.OpenAIService;
+import dev.teamproject.service.RatingService;
 import dev.teamproject.service.UserService;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
@@ -30,8 +38,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
-
 
 
 /**
@@ -50,13 +56,26 @@ public class KitchenControllerUnitTests {
   @MockBean
   private UserService userService;
 
+  @MockBean
+  private OpenAIService openAIService;
+
+  @MockBean
+  private RatingService ratingService;
+
   @Autowired
   private ObjectMapper objectMapper;
 
   Kitchen kitchen;
   Kitchen kitchen2;
 
+  UserLocation userLocation;
+
   private static final String ADDRESS = "Columbia University";
+  private static final String DISABILITY_STATUS_DISABLED = "disabled";
+  private static final String DISABILITY_STATUS_NOT_DISABLED = "not disabled";
+  private static final String MEAL_HOURS_DAYTIME = "2PM";
+  private static final String MEAL_HOURS_NIGHTTIME = "9PM";
+
 
   /**
    *  set up a kitchen object before each test.
@@ -74,6 +93,12 @@ public class KitchenControllerUnitTests {
             .name("Kitchen2")
             .address("116 street")
             .contactPhone("987654321").build();
+
+    userLocation = UserLocation.builder()
+        .address(ADDRESS)
+        .latitude(40.8075)
+        .longitude(-73.9626)
+        .build();
   }
 
   //Post Controller
@@ -210,7 +235,7 @@ public class KitchenControllerUnitTests {
 
     // verify
     response.andExpect(status().isNotFound())
-        .andExpect(content().string("Invalid address"));
+        .andExpect(content().string("No kitchens found in the Mysql DB"));
   }
 
   @Test
@@ -282,6 +307,39 @@ public class KitchenControllerUnitTests {
         .andExpect(content().string(containsString("some place")))
         .andExpect(content().string(containsString("Kitchen2")))
         .andExpect(content().string(containsString("116 street")));
+  }
+
+  @Test
+  @Order(13)
+  public void getKitchenRecommendationTest() throws Exception {
+
+    String mockedResponse = "The most recommended kitchen is \\\"Kitchen1\\\" at some place," +
+        " close to your location. Known for friendly service and high-quality food. The second " +
+        "recommended kitchen is \\\"Kitchen2\\\" at 116 street, nearby with convenient access. " +
+        "Offers pantry and meal services with positive staff reviews.";
+    Map<String, String> answerMap = new HashMap<>();
+    answerMap.put("answer", mockedResponse);
+
+    // precondition
+    given(userService.getUserLocation(ADDRESS)).willReturn(userLocation);
+
+    given(kitchenService.getAllKitchens()).willReturn(List.of(kitchen, kitchen2));
+
+    given(openAIService.getKitchenRecommendation(any(), any(), any(), anyString(), anyString()))
+        .willReturn(answerMap);
+
+    // action
+    ResultActions response = mockMvc.perform(
+        get("/api/kitchens/recommendation?location={address}" +
+                "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+            ADDRESS, DISABILITY_STATUS_DISABLED, MEAL_HOURS_DAYTIME));
+
+    // verify
+    response.andExpect(status().isOk())
+        .andDo(print())
+        .andExpect(content().string(containsString("Known for friendly service and high-quality food")))
+        .andExpect(content().string(containsString("at 116 street")));
+
   }
 
 

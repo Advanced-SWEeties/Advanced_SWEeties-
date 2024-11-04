@@ -1,6 +1,7 @@
 package dev.teamproject.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -9,6 +10,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@Builder
 public class UserLocation {
   private double latitude;
   private double longitude;
