@@ -311,6 +311,130 @@ public class KitchenControllerUnitTests {
 
   @Test
   @Order(13)
+  public void getKitchenRecommendationInvalidLocationTest() throws Exception {
+    // action
+    String location  = "";
+    ResultActions response = mockMvc.perform(
+        get("/api/kitchens/recommendation?location={location}" +
+            "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+            location, DISABILITY_STATUS_DISABLED, MEAL_HOURS_DAYTIME));
+
+    // verify
+    response.andExpect(status().isBadRequest())
+        .andExpect(content().string("Invalid input"));
+
+    location  = null;
+    response = mockMvc.perform(
+        get("/api/kitchens/recommendation?location={location}" +
+            "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+            location, DISABILITY_STATUS_DISABLED, MEAL_HOURS_DAYTIME));
+
+    // verify
+    response.andExpect(status().isBadRequest())
+        .andExpect(content().string("Invalid input"));
+  }
+
+  @Test
+  @Order(14)
+  public void getKitchenRecommendationInvalidDisabilityStatusTest() throws Exception {
+    // action
+    String disabilityStatus  = "";
+    ResultActions response = mockMvc.perform(
+        get("/api/kitchens/recommendation?location={location}" +
+            "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+            ADDRESS, disabilityStatus, MEAL_HOURS_DAYTIME));
+
+    // verify
+    response.andExpect(status().isBadRequest())
+        .andExpect(content().string("Invalid input"));
+
+    disabilityStatus  = null;
+    response = mockMvc.perform(
+        get("/api/kitchens/recommendation?location={location}" +
+            "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+            ADDRESS, disabilityStatus, MEAL_HOURS_DAYTIME));
+
+    // verify
+    response.andExpect(status().isBadRequest())
+        .andExpect(content().string("Invalid input"));
+  }
+
+  @Test
+  @Order(15)
+  public void getKitchenRecommendationInvalidMealHoursTest() throws Exception {
+    // action
+    String mealHours  = "";
+    ResultActions response = mockMvc.perform(
+        get("/api/kitchens/recommendation?location={location}" +
+            "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+            ADDRESS, DISABILITY_STATUS_DISABLED, mealHours));
+
+    // verify
+    response.andExpect(status().isBadRequest())
+        .andExpect(content().string("Invalid input"));
+
+    mealHours  = null;
+    response = mockMvc.perform(
+        get("/api/kitchens/recommendation?location={location}" +
+            "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+            ADDRESS, DISABILITY_STATUS_DISABLED, mealHours));
+
+    // verify
+    response.andExpect(status().isBadRequest())
+        .andExpect(content().string("Invalid input"));
+  }
+
+  @Test
+  @Order(16)
+  public void getKitchenRecommendationNoKitchensFoundTest() throws Exception {
+    // precondition
+    given(userService.getUserLocation(ADDRESS)).willReturn(userLocation);
+
+    given(kitchenService.getAllKitchens()).willReturn(null);
+
+    // action
+    ResultActions response = mockMvc.perform(
+        get("/api/kitchens/recommendation?location={address}" +
+            "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+            ADDRESS, DISABILITY_STATUS_DISABLED, MEAL_HOURS_DAYTIME));
+
+    // verify
+    response.andExpect(status().isNotFound())
+        .andExpect(content().string("No kitchens found in the Mysql DB"));
+
+    given(kitchenService.getAllKitchens()).willReturn(List.of());
+
+    // action
+    response = mockMvc.perform(
+        get("/api/kitchens/recommendation?location={address}" +
+                "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+            ADDRESS, DISABILITY_STATUS_DISABLED, MEAL_HOURS_DAYTIME));
+
+    // verify
+    response.andExpect(status().isNotFound())
+        .andExpect(content().string("No kitchens found in the Mysql DB"));
+
+  }
+
+  @Test
+  @Order(17)
+  public void getKitchenRecommendationGetUserLocationNullTest() throws Exception {
+    // precondition
+    given(userService.getUserLocation(ADDRESS)).willReturn(null);
+
+    // action
+    ResultActions response = mockMvc.perform(
+        get("/api/kitchens/recommendation?location={address}" +
+            "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+            ADDRESS, DISABILITY_STATUS_DISABLED, MEAL_HOURS_DAYTIME));
+
+    // verify
+    response.andExpect(status().isNotFound())
+        .andExpect(content().string("Invalid location"));
+  }
+
+  @Test
+  @Order(13)
   public void getKitchenRecommendationTest() throws Exception {
 
     String mockedResponse = "The most recommended kitchen is \\\"Kitchen1\\\" at some place," +
@@ -337,10 +461,8 @@ public class KitchenControllerUnitTests {
     // verify
     response.andExpect(status().isOk())
         .andDo(print())
-        .andExpect(content().string(containsString("Known for friendly service and high-quality food")))
+        .andExpect(content().string(containsString("Known for friendly service " +
+            "and high-quality food")))
         .andExpect(content().string(containsString("at 116 street")));
-
   }
-
-
 }
