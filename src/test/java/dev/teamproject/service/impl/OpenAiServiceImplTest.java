@@ -12,25 +12,24 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.ai.chat.model.ChatModel;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 
 /**
  * Unit testing for OpenAIServiceImpl.
  */
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class OpenAiServiceImplTest {
 
-  @Autowired
+  @Mock
   OpenAiService openAiService;
 
-  @Mock
-  private ChatModel chatModel;
-
+  @InjectMocks
+  private OpenAiServiceImpl openAiServiceImpl;
 
   Kitchen kitchen;
   Kitchen kitchen2;
