@@ -52,10 +52,10 @@ public class OpenAiServiceImpl implements OpenAiService {
    */
   @Override
   public Map<String, String> getKitchenRecommendation(List<Kitchen> allKitchens,
-                                                     List<Rating> allRatings,
-                                                     UserLocation location,
-                                                     String disabilityStatus,
-                                                     String mealHours) {
+                                                      List<Rating> allRatings,
+                                                      UserLocation location,
+                                                      String disabilityStatus,
+                                                      String mealHours) {
     PromptTemplate promptTemplate = new PromptTemplate(getKitchenRecommendationTemplate);
     Prompt prompt = promptTemplate.create(Map.of(
         "allKitchens", allKitchens,
