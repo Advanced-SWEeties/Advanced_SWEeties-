@@ -29,7 +29,6 @@ public class OpenAiServiceImpl implements OpenAiService {
   @Value("classpath:templates/get-kitchen-recommendation.st")
   private Resource getKitchenRecommendationTemplate;
 
-
   public OpenAiServiceImpl(ChatModel chatModel) {
     this.chatModel = chatModel;
   }
