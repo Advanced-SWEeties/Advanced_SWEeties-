@@ -3,7 +3,10 @@ package dev.teamproject.service.impl;
 import dev.teamproject.model.Kitchen;
 import dev.teamproject.model.Rating;
 import dev.teamproject.model.UserLocation;
-import dev.teamproject.service.OpenAIService;
+import dev.teamproject.service.OpenAiService;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -13,26 +16,23 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Implementation of the OpenAIService interface.
  * This service contains the various logic related to operations which leverage AI capabilities.
  */
 @Primary
 @Service
-public class OpenAIServiceImpl implements OpenAIService {
+public class OpenAiServiceImpl implements OpenAiService {
 
   private final ChatModel chatModel;
 
-  public OpenAIServiceImpl(ChatModel chatModel) {
-    this.chatModel = chatModel;
-  }
-
   @Value("classpath:templates/get-kitchen-recommendation.st")
   private Resource getKitchenRecommendationTemplate;
+
+
+  public OpenAiServiceImpl(ChatModel chatModel) {
+    this.chatModel = chatModel;
+  }
 
   /**
    * Generates kitchen recommendations based on available kitchens, user ratings,
@@ -51,13 +51,11 @@ public class OpenAIServiceImpl implements OpenAIService {
    * @throws RuntimeException if there is an error in the AI model call or response processing.
    */
   @Override
-  public Map<String,String> getKitchenRecommendation(
-      List<Kitchen> allKitchens,
-      List<Rating> allRatings,
-      UserLocation location,
-      String disabilityStatus,
-      String mealHours) {
-
+  public Map<String, String> getKitchenRecommendation(List<Kitchen> allKitchens,
+                                                     List<Rating> allRatings,
+                                                     UserLocation location,
+                                                     String disabilityStatus,
+                                                     String mealHours) {
     PromptTemplate promptTemplate = new PromptTemplate(getKitchenRecommendationTemplate);
     Prompt prompt = promptTemplate.create(Map.of(
         "allKitchens", allKitchens,

@@ -19,10 +19,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.teamproject.model.Kitchen;
 import dev.teamproject.model.UserLocation;
 import dev.teamproject.service.KitchenService;
-import dev.teamproject.service.OpenAIService;
+import dev.teamproject.service.OpenAiService;
 import dev.teamproject.service.RatingService;
 import dev.teamproject.service.UserService;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +56,7 @@ public class KitchenControllerUnitTests {
   private UserService userService;
 
   @MockBean
-  private OpenAIService openAIService;
+  private OpenAiService openAiService;
 
   @MockBean
   private RatingService ratingService;
@@ -315,8 +314,8 @@ public class KitchenControllerUnitTests {
     // action
     String location  = "";
     ResultActions response = mockMvc.perform(
-        get("/api/kitchens/recommendation?location={location}" +
-            "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+        get("/api/kitchens/recommendation?location={location}"
+                + "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
             location, DISABILITY_STATUS_DISABLED, MEAL_HOURS_DAYTIME));
 
     // verify
@@ -325,8 +324,8 @@ public class KitchenControllerUnitTests {
 
     location  = null;
     response = mockMvc.perform(
-        get("/api/kitchens/recommendation?location={location}" +
-            "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+        get("/api/kitchens/recommendation?location={location}"
+                + "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
             location, DISABILITY_STATUS_DISABLED, MEAL_HOURS_DAYTIME));
 
     // verify
@@ -340,8 +339,8 @@ public class KitchenControllerUnitTests {
     // action
     String disabilityStatus  = "";
     ResultActions response = mockMvc.perform(
-        get("/api/kitchens/recommendation?location={location}" +
-            "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+        get("/api/kitchens/recommendation?location={location}"
+                + "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
             ADDRESS, disabilityStatus, MEAL_HOURS_DAYTIME));
 
     // verify
@@ -350,8 +349,8 @@ public class KitchenControllerUnitTests {
 
     disabilityStatus  = null;
     response = mockMvc.perform(
-        get("/api/kitchens/recommendation?location={location}" +
-            "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+        get("/api/kitchens/recommendation?location={location}"
+                + "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
             ADDRESS, disabilityStatus, MEAL_HOURS_DAYTIME));
 
     // verify
@@ -365,8 +364,8 @@ public class KitchenControllerUnitTests {
     // action
     String mealHours  = "";
     ResultActions response = mockMvc.perform(
-        get("/api/kitchens/recommendation?location={location}" +
-            "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+        get("/api/kitchens/recommendation?location={location}"
+                + "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
             ADDRESS, DISABILITY_STATUS_DISABLED, mealHours));
 
     // verify
@@ -375,8 +374,8 @@ public class KitchenControllerUnitTests {
 
     mealHours  = null;
     response = mockMvc.perform(
-        get("/api/kitchens/recommendation?location={location}" +
-            "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+        get("/api/kitchens/recommendation?location={location}"
+                + "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
             ADDRESS, DISABILITY_STATUS_DISABLED, mealHours));
 
     // verify
@@ -394,8 +393,8 @@ public class KitchenControllerUnitTests {
 
     // action
     ResultActions response = mockMvc.perform(
-        get("/api/kitchens/recommendation?location={address}" +
-            "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+        get("/api/kitchens/recommendation?location={address}"
+                + "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
             ADDRESS, DISABILITY_STATUS_DISABLED, MEAL_HOURS_DAYTIME));
 
     // verify
@@ -406,8 +405,8 @@ public class KitchenControllerUnitTests {
 
     // action
     response = mockMvc.perform(
-        get("/api/kitchens/recommendation?location={address}" +
-                "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+        get("/api/kitchens/recommendation?location={address}"
+                + "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
             ADDRESS, DISABILITY_STATUS_DISABLED, MEAL_HOURS_DAYTIME));
 
     // verify
@@ -424,8 +423,8 @@ public class KitchenControllerUnitTests {
 
     // action
     ResultActions response = mockMvc.perform(
-        get("/api/kitchens/recommendation?location={address}" +
-            "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+        get("/api/kitchens/recommendation?location={address}"
+                + "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
             ADDRESS, DISABILITY_STATUS_DISABLED, MEAL_HOURS_DAYTIME));
 
     // verify
@@ -437,10 +436,10 @@ public class KitchenControllerUnitTests {
   @Order(13)
   public void getKitchenRecommendationTest() throws Exception {
 
-    String mockedResponse = "The most recommended kitchen is \\\"Kitchen1\\\" at some place," +
-        " close to your location. Known for friendly service and high-quality food. The second " +
-        "recommended kitchen is \\\"Kitchen2\\\" at 116 street, nearby with convenient access. " +
-        "Offers pantry and meal services with positive staff reviews.";
+    String mockedResponse = "The most recommended kitchen is \\\"Kitchen1\\\" at some place,"
+        + " close to your location. Known for friendly service and high-quality food. The second "
+        + "recommended kitchen is \\\"Kitchen2\\\" at 116 street, nearby with convenient access. "
+        + "Offers pantry and meal services with positive staff reviews.";
     Map<String, String> answerMap = new HashMap<>();
     answerMap.put("answer", mockedResponse);
 
@@ -449,20 +448,20 @@ public class KitchenControllerUnitTests {
 
     given(kitchenService.getAllKitchens()).willReturn(List.of(kitchen, kitchen2));
 
-    given(openAIService.getKitchenRecommendation(any(), any(), any(), anyString(), anyString()))
+    given(openAiService.getKitchenRecommendation(any(), any(), any(), anyString(), anyString()))
         .willReturn(answerMap);
 
     // action
     ResultActions response = mockMvc.perform(
-        get("/api/kitchens/recommendation?location={address}" +
-                "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
+        get("/api/kitchens/recommendation?location={address}"
+                + "&disabilityStatus={disabilityStatus}&mealHours={mealHours}",
             ADDRESS, DISABILITY_STATUS_DISABLED, MEAL_HOURS_DAYTIME));
 
     // verify
     response.andExpect(status().isOk())
         .andDo(print())
-        .andExpect(content().string(containsString("Known for friendly service " +
-            "and high-quality food")))
+        .andExpect(content().string(containsString("Known for friendly service "
+            + "and high-quality food")))
         .andExpect(content().string(containsString("at 116 street")));
   }
 }

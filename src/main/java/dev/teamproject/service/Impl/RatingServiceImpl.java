@@ -3,11 +3,10 @@ package dev.teamproject.service.impl;
 import dev.teamproject.model.Rating;
 import dev.teamproject.repository.RatingRepository;
 import dev.teamproject.service.RatingService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Implementation of the RatingService interface.
