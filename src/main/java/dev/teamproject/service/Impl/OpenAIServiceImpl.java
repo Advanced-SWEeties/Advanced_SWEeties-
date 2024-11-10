@@ -64,7 +64,6 @@ public class OpenAiServiceImpl implements OpenAiService {
         "disabilityStatus", disabilityStatus,
         "mealHours", mealHours));
     ChatResponse answer = chatModel.call(prompt);
-
     Map<String, String> response = new HashMap<>();
     response.put("answer", answer.getResult().getOutput().getContent());
     return response;
