@@ -6,12 +6,22 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.teamproject.model.User;
+import dev.teamproject.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class UserTests {
+
+  @Mock
+  private UserService userService;
+
+  @InjectMocks
+  private User user;
 
   @BeforeEach
   public void setUp() {
@@ -47,5 +57,4 @@ class UserTests {
     assertEquals("BronzeMember", user.getUserType());
   }
 
-  public static User user;
 }
