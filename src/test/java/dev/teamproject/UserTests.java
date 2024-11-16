@@ -6,10 +6,21 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.teamproject.model.User;
+import dev.teamproject.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class UserTests {
+
+  @Mock
+  private UserService userService;
+
+  @InjectMocks
   private User user;
 
   @BeforeEach
@@ -45,4 +56,6 @@ class UserTests {
     user.createAccount("testUser", "password123");
     assertEquals("BronzeMember", user.getUserType());
   }
+
+
 }
