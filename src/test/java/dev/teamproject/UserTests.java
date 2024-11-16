@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class UserTests {
-  private User user;
 
   @Mock
   private UserService userService;
