@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TempInfo {
-  private String formattedAddress;
   private String displayName;
+  private String formattedAddress;
   private double lat;
   private double lng;
   private Long id;

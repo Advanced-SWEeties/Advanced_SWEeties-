@@ -116,8 +116,8 @@ public class KitchenController {
    * Response:
    * 200 OK - Returns a list of kitchens with details such as name, address, distance,
    * rating, and accessibility features.
-   * 400 Bad Request - If the parameters are invalid.
-   * 500 Internal Server Error - For unexpected backend errors.
+   * 404 Not Found - If no kitchens are found in the database.
+   * 400 Bad Request - If the parameters are invalid..
    */
   @GetMapping("/kitchens/nearest")
   public ResponseEntity<?> getNearestKitchens(
@@ -152,7 +152,7 @@ public class KitchenController {
    * Response:
    * 200 OK - Successfully returns the list of top-rated charity kitchens.
    * 400 Bad Request - If the parameters are invalid.
-   * 500 Internal Server Error - For unexpected backend errors.
+   * 404 Not Found - If no kitchens are found in the database.
    */
   @GetMapping("/kitchens/top-rated")
   public ResponseEntity<?> getTopRatedKitchens(
@@ -205,7 +205,7 @@ public class KitchenController {
    * Description: Allows authorized users to update the details of a charity kitchen.
    * Response:
    * 200 OK - Kitchen information updated successfully.
-   * 403 Forbidden - If the user does not have sufficient privileges.
+   * 403 Forbidden - If the user does not have sufficient privileges. (Not implemented)
    * 404 Not Found - If kitchenId does not exist.
    * 500 Internal Server Error - For unexpected backend errors.
    */
@@ -237,7 +237,8 @@ public class KitchenController {
    * Description: Allows authorized users to add a new charity kitchen to the system.
    * Response:
    * 201 Created - New kitchen added successfully.
-   * 403 Forbidden - If the user does not have sufficient privileges.
+   * 403 Forbidden - If the user does not have sufficient privileges. (Not implemented)
+   * 404 Not Found - If the kitchen to be added is not found.
    * 500 Internal Server Error - For unexpected backend errors.
    *
    */
@@ -269,6 +270,7 @@ public class KitchenController {
    * Response:
    * 201 Created - New kitchen added successfully.
    * 403 Forbidden - If the user does not have sufficient privileges.
+   * 404 Not Found - If the kitchen to be deleted is not found.
    * 500 Internal Server Error - For unexpected backend errors.
    *
    */

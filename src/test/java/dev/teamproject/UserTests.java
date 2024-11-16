@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class UserTests {
+  private User user;
 
   @Mock
   private UserService userService;
@@ -56,5 +57,6 @@ class UserTests {
     user.createAccount("testUser", "password123");
     assertEquals("BronzeMember", user.getUserType());
   }
+
 
 }

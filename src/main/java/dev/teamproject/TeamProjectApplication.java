@@ -34,6 +34,7 @@ public class TeamProjectApplication {
    * RestTemplate bean configuration.
    * Provides a centralized RestTemplate instance for the entire application.
    */
+
   @Bean
   public RestTemplate restTemplate() {
     return new RestTemplate();

@@ -29,7 +29,6 @@ mvn spring-boot:run
 - [Get Nearest Kitchens](#get-nearest-kitchens)
 - [Get Top Rated Kitchens](#get-top-rated-kitchens)
 - [Get Kitchen Details](#get-kitchen-details)
-- [Predict Waiting Times](#predict-waiting-times)
 - [Submit Rating](#submit-rating)
 - [User Login](#user-login)
 - [Update Kitchen Info](#update-kitchen-info)
@@ -59,9 +58,8 @@ mvn spring-boot:run
 
 **Response**:
 - `200 OK`: Returns a list of kitchens with details such as name, address, distance, rating, and accessibility features.
-- `400 Bad Request`: If the parameters are invalid.
+- `404 Not Found`: If no kitchens are found in the database.
 - `500 Internal Server Error`: For unexpected backend errors.
-
 ---
 
 ## Get Top Rated Kitchens
@@ -92,7 +90,7 @@ mvn spring-boot:run
 
 ---
 
-## Predict Waiting Times
+## Predict Waiting Times (not implemented yet)
 ### `GET /api/kitchens/wait-times`
 **Description**: Uses machine learning models to predict average waiting times based on historical data.
 
@@ -127,7 +125,7 @@ mvn spring-boot:run
 
 ---
 
-## User Login
+## User Login (Not implemented yet)
 ### `POST /api/users/login`
 **Description**: Authenticates user credentials and returns an API key for session management.
 
@@ -167,8 +165,8 @@ mvn spring-boot:run
 
 **Response**:
 - `200 OK`: Kitchen information updated successfully.
-- `403 Forbidden`: If the user does not have sufficient privileges.
-- `404 Not Found`: If `kitchen_id` does not exist.
+- `403 Forbidden`: If the user does not have sufficient privileges. (Not implemented yet)
+- `404 Not Found`: If `kitchen_id` does not exist. 
 - `500 Internal Server Error`: For unexpected backend errors.
 
 ---
@@ -194,12 +192,13 @@ mvn spring-boot:run
 
 **Response**:
 - `201 Created`: New kitchen added successfully.
-- `403 Forbidden`: If the user does not have sufficient privileges.
+- `403 Forbidden`: If the user does not have sufficient privileges. (Not implemented yet)
+- `404 Not Found`: If `kitchen_id` does not exist.
 - `500 Internal Server Error`: For unexpected backend errors.
 
 ---
 
-## Delete User
+## Delete User (Not implemented yet)
 ### `DELETE /api/users/delete`
 **Required Role**: `MANAGER`
 
@@ -210,7 +209,8 @@ mvn spring-boot:run
 
 **Response**:
 - `200 OK`: User deleted successfully.
-- `403 Forbidden`: If the user does not have sufficient privileges.
+- `403 Forbidden`: If the user does not have sufficient privileges. (Not implemented yet)
+- `404 Not Found`: If `user_id` does not exist.
 - `500 Internal Server Error`: For unexpected backend errors.
 
 ---
@@ -228,6 +228,67 @@ mvn spring-boot:run
 ```
 
 Once the application is running, you can access the API at `http://localhost:8080/api/`.
+
+---
+
+## Testing the Application
+
+We have integrated unit tests for the application and are using JACOCO for code coverage reports. To run the tests, use the following command:
+
+```bash
+# Run the tests
+mvn clean verify
+```
+
+After running the tests, you can view the code coverage report in the `target/site/jacoco/index.html` file.
+
+### Coverage report
+We have run the tests and generated a coverage report!
+<img width="1242" alt="image" src="https://github.com/user-attachments/assets/3e250131-619f-453e-8eed-db11e3eeb7ed">
+
+
+### Our api test results
+- We have tested our API using curl and Bruno. They are pretty much the same, so for simplicity, we will only show bruno test results. You can find the curl commands below and test the results on your local machine.
+
+- Bruno tests
+  - Hello world for our api:
+<img width="1039" alt="image" src="https://github.com/user-attachments/assets/844f815e-962b-4b25-b2ef-1b239b6f4a06">
+  - Nearest kitchen
+<img width="1042" alt="image" src="https://github.com/user-attachments/assets/f7b8ce6d-df21-4ecc-861e-cc7078eb6a42">
+  - Top rated
+<img width="1042" alt="image" src="https://github.com/user-attachments/assets/05255ac4-337e-42bb-b457-46d178f1048b">
+  - Get details
+<img width="1048" alt="image" src="https://github.com/user-attachments/assets/5bdd339c-091f-4b5c-b7e1-b1a70e608d33">
+  - Update
+<img width="1043" alt="image" src="https://github.com/user-attachments/assets/e37c4cac-7fea-46a9-af33-cf05e87dc9da">
+  - Add
+<img width="1043" alt="image" src="https://github.com/user-attachments/assets/724b1bc3-c464-40a9-91bf-b00e8ea84315">
+  - When we add again:
+<img width="1044" alt="image" src="https://github.com/user-attachments/assets/99067ffd-27d2-4646-b2a2-7928149206b1">
+
+  - Delete
+<img width="1042" alt="image" src="https://github.com/user-attachments/assets/acbfdcaf-739c-4574-8016-f9adf4ff000b">
+
+
+
+
+- curl command for testing the nearest kitchens:
+```bash
+# Get nearest kitchens
+# https://advancedsweeties.uk.r.appspot.com/api/kitchens/nearest?address=columbia%20university&count=4
+curl -G 'https://advancedsweeties.uk.r.appspot.com/api/kitchens/nearest' --data-urlencode 'address=columbia university' --data-urlencode 'count=4'
+```
+```bash
+# Get top rated kitchens
+# https://advancedsweeties.uk.r.appspot.com/api/kitchens/top-rated?count=10
+curl -G 'https://advancedsweeties.uk.r.appspot.com/api/kitchens/top-rated' --data-urlencode 'count=10'
+```
+```bash
+# Get kitchen details
+# https://advancedsweeties.uk.r.appspot.com/api/kitchens/details?kitchen_id=9
+curl -X GET 'https://advancedsweeties.uk.r.appspot.com/api/kitchens/details?kitchen_id=9'
+```
+For update, add, and delete kitchen, we will not provide curl commands since it may violate our database.
 
 ---
 
