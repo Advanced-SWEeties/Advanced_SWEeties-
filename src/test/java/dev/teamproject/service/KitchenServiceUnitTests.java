@@ -25,9 +25,10 @@ import dev.teamproject.model.TempInfo;
 import dev.teamproject.repository.KitchenRepository;
 import dev.teamproject.repository.RatingRepository;
 import dev.teamproject.service.impl.KitchenServiceImpl;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import org.hibernate.dialect.SybaseASEDialect;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -69,6 +70,8 @@ public class KitchenServiceUnitTests {
   private KitchenServiceImpl kitchenService;
 
   private Kitchen kitchen;
+  private Kitchen kitchen2;
+  private Kitchen kitchen3;
   
   @Value("${google.map.key}")
   private String apiKey;
@@ -81,8 +84,25 @@ public class KitchenServiceUnitTests {
     kitchen = Kitchen.builder()
             .kitchenId(1L)
             .name("Kitchen1")
+            .rating(3.2)
             .address("some place")
             .contactPhone("1234567890").build();
+
+    kitchen2 = Kitchen.builder()
+        .kitchenId(2L)
+        .name("Kitchen B")
+        .rating(4.5)
+        .address("some place")
+        .contactPhone("1234567890")
+        .build();
+
+    kitchen3 = Kitchen.builder()
+        .kitchenId(3L)
+        .name("Kitchen C")
+        .rating(5.0)
+        .address("some place")
+        .contactPhone("1234567890")
+        .build();
   }
 
   @Test
@@ -256,6 +276,67 @@ public class KitchenServiceUnitTests {
 
   @Test
   @Order(5)
+  public void updateKitchenTest_setName() {
+    // Given
+    Kitchen existingKitchen = Kitchen.builder()
+        .kitchenId(1L)
+        .name("Old Name")
+        .address("somewhere")
+        .contactPhone("12345678")
+        .build();
+
+    Kitchen updateInfo = Kitchen.builder()
+        .name("New Name")
+        .build();
+
+    given(kitchenRepository.findByKitchenId(1L)).willReturn(Optional.of(existingKitchen));
+    given(kitchenRepository.save(any(Kitchen.class)))
+        .willAnswer(invocation -> invocation.getArgument(0));
+
+    // Action
+    Kitchen updatedKitchen = kitchenService.updateKitchen(updateInfo, 1L);
+
+    // Verify
+    assertEquals("New Name", updatedKitchen.getName());
+    assertEquals("somewhere", updatedKitchen.getAddress());
+    assertEquals("12345678", updatedKitchen.getContactPhone());
+    verify(kitchenRepository).save(updatedKitchen);
+  }
+
+
+  @Test
+  @Order(5)
+  public void updateKitchenTest_setAddress() {
+    // Given
+    Kitchen existingKitchen = Kitchen.builder()
+        .kitchenId(1L)
+        .name("existingKitchen1")
+        .address("Old Address")
+        .contactPhone("12345678")
+        .build();
+
+    Kitchen updateInfo = Kitchen.builder()
+        .address("116th St, New York, NY 10026")
+        .build();
+
+    given(kitchenRepository.findByKitchenId(1L)).willReturn(Optional.of(existingKitchen));
+    given(kitchenRepository.save(any(Kitchen.class)))
+        .willAnswer(invocation -> invocation.getArgument(0));
+
+    // Action
+    Kitchen updatedKitchen = kitchenService.updateKitchen(updateInfo, 1L);
+
+    // Verify
+    assertEquals("existingKitchen1", updatedKitchen.getName());
+    assertEquals("116th St, New York, NY 10026", updatedKitchen.getAddress());
+    assertEquals("12345678", updatedKitchen.getContactPhone());
+    verify(kitchenRepository).save(updatedKitchen);
+
+  }
+
+
+  @Test
+  @Order(5)
   public void updateKitchenTest_KitchenNotFound() {
     // Given
     long nonExistentKitchenId = 123; 
@@ -319,6 +400,56 @@ public class KitchenServiceUnitTests {
   }
 
   @Test
+  @Order(7)
+  public void updateKitchenTest_NoUpdateWhenAccessibilityFeaturesAreSame() {
+    // Given
+    Kitchen existingKitchen = Kitchen.builder()
+        .kitchenId(1L)
+        .accessibilityFeatures("Wheelchair ramp available")
+        .build();
+
+    Kitchen updateInfo = Kitchen.builder()
+        .accessibilityFeatures("Wheelchair ramp available") // Same value
+        .build();
+
+    given(kitchenRepository.findByKitchenId(1L)).willReturn(Optional.of(existingKitchen));
+    given(kitchenRepository.save(any(Kitchen.class)))
+        .willAnswer(invocation -> invocation.getArgument(0));
+
+    // Action
+    Kitchen updatedKitchen = kitchenService.updateKitchen(updateInfo, 1L);
+
+    // Verify
+    assertEquals(existingKitchen.getAccessibilityFeatures(),
+        updatedKitchen.getAccessibilityFeatures());
+    verify(kitchenRepository, times(1)).save(updatedKitchen);
+  }
+
+  @Test
+  @Order(7)
+  public void updateKitchenTest_NoUpdateWhenOperationalStatusIsSame() {
+    // Given
+    Kitchen existingKitchen = new Kitchen();
+    existingKitchen.setKitchenId(1L);
+    existingKitchen.setOperationalStatus("Open");
+
+    Kitchen updateInfo = new Kitchen();
+    updateInfo.setOperationalStatus("Open"); // Same value
+
+    given(kitchenRepository.findByKitchenId(1L)).willReturn(Optional.of(existingKitchen));
+    given(kitchenRepository.save(any(Kitchen.class)))
+        .willAnswer(invocation -> invocation.getArgument(0));
+
+    // Action
+    Kitchen updatedKitchen = kitchenService.updateKitchen(updateInfo, 1L);
+
+    // Verify
+    assertEquals("Open", updatedKitchen.getOperationalStatus());
+    verify(kitchenRepository, times(1)).save(updatedKitchen); // No update should occur
+  }
+
+
+  @Test
   @Order(8)
   public void updateKitchenTest_UpdateOperatingHours() {
     // Given
@@ -339,6 +470,30 @@ public class KitchenServiceUnitTests {
 
     // Verify
     assertEquals("10 AM - 6 PM", updatedKitchen.getOperatingHours());
+  }
+
+  @Test
+  @Order(8)
+  public void updateKitchenTest_NoUpdateWhenOperatingHoursAreSame() {
+    // Given
+    Kitchen existingKitchen = new Kitchen();
+    existingKitchen.setKitchenId(1L);
+    existingKitchen.setOperatingHours("9 AM - 5 PM");
+
+    Kitchen updateInfo = new Kitchen();
+    updateInfo.setOperatingHours("9 AM - 5 PM"); // Same value
+
+    given(kitchenRepository.findByKitchenId(1L)).willReturn(Optional.of(existingKitchen));
+    given(
+      kitchenRepository.save(any(Kitchen.class))
+    ).willAnswer(invocation -> invocation.getArgument(0));
+
+    // Action
+    Kitchen updatedKitchen = kitchenService.updateKitchen(updateInfo, 1L);
+
+    // Verify
+    assertEquals(existingKitchen.getOperatingHours(), updatedKitchen.getOperatingHours());
+    verify(kitchenRepository, times(1)).save(updatedKitchen); // No update should occur
   }
 
   @Test
@@ -387,6 +542,30 @@ public class KitchenServiceUnitTests {
     verify(kitchenRepository).save(any(Kitchen.class));
   }
 
+  @Test
+  @Order(10)
+  public void updateKitchenTest_NoOperationalStatusUpdateWhenTheSameOperationalStatus() {
+    // Given
+    Kitchen existingKitchen = new Kitchen();
+    existingKitchen.setKitchenId(1L);
+    existingKitchen.setOperationalStatus("Closed");
+
+    Kitchen updateInfo = new Kitchen();
+    updateInfo.setOperationalStatus("Closed");
+
+    given(kitchenRepository.findByKitchenId(1L)).willReturn(Optional.of(existingKitchen));
+    given(
+      kitchenRepository.save(any(Kitchen.class))
+    ).willAnswer(invocation -> invocation.getArgument(0));
+
+    // Action
+    Kitchen updatedKitchen = kitchenService.updateKitchen(updateInfo, 1L);
+
+    // Verify
+    assertEquals("Closed", updatedKitchen.getOperationalStatus());
+    verify(kitchenRepository).save(any(Kitchen.class));
+  }
+
 
   @Test
   @Order(5)
@@ -419,6 +598,7 @@ public class KitchenServiceUnitTests {
   }
 
   @Test
+  @Order(7)
   public void testFetchAllKitchens() {
     
     HttpHeaders headers = new HttpHeaders();
@@ -426,10 +606,8 @@ public class KitchenServiceUnitTests {
     headers.add("X-Goog-Api-Key", null);
     headers.add("X-Goog-FieldMask", "*");
 
-    String requestUrl = "https://places.googleapis.com/v1/places:searchText";
-    String requestBody = 
+    String requestBody =
         "{ \"textQuery\": \"soup kitchen in New York City\", \"regionCode\": \"US\" }";
-    HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
 
     String jsonResponse = """
         {
@@ -482,14 +660,11 @@ public class KitchenServiceUnitTests {
           ]
         }
         """;
-      
-
 
     ResponseEntity<String> mockResponse = new ResponseEntity<>(jsonResponse, HttpStatus.OK);
 
     given(restTemplate.postForEntity(anyString(), any(), eq(String.class)))
         .willReturn(mockResponse);
-
 
     // Execute the service method
     List<TempInfo> results = kitchenService.fetchAllKitchens();
@@ -501,5 +676,244 @@ public class KitchenServiceUnitTests {
     TempInfo firstResult = results.get(0);
     assertEquals("Community Kitchen-West Harlem", firstResult.getDisplayName());
   }
-  //TODO top rated restaurant and fetchAllKitchens
+
+  @Test
+  @Order(8)
+  public void fetchTopRatedKitchens_getAllKitchensEmpty() {
+    // Given
+    when(kitchenRepository.findAll()).thenReturn(Collections.emptyList());
+
+    // Action and verify
+    assertThrows(NullPointerException.class, () -> kitchenService.fetchTopRatedKitchens(3));
+  }
+
+  @Test
+  public void fetchTopRatedKitchens_countLessThanListSize_returnsSubset() {
+    // Given
+    List<Kitchen> kitchens = new ArrayList<>();
+    kitchens.add(kitchen);
+    kitchens.add(kitchen2);
+    kitchens.add(kitchen3);
+    when(kitchenRepository.findAll()).thenReturn(kitchens);
+
+    // Action
+    List<Kitchen> result = kitchenService.fetchTopRatedKitchens(2);
+
+    // verify
+    assertEquals(2, result.size());
+    assertEquals("Kitchen C", result.get(0).getName());
+    assertEquals("Kitchen B", result.get(1).getName());
+  }
+
+  @Test
+  @Order(8)
+  public void fetchAllKitchens_Success() throws Exception {
+    String jsonResponse = """
+        {
+          "places": [
+            {
+              "id": 10,
+              "displayName": { "text": "Community Kitchen-West Harlem" },
+              "formattedAddress": "252 W 116th St, New York, NY 10026",
+              "nationalPhoneNumber": "(212) 665-9082",
+              "rating": 4.5,
+              "businessStatus": "Operational",
+              "location": { "latitude": 40.8039429, "longitude": -73.954989 },
+              "regularOpeningHours": { "weekdayDescriptions": ["Monday: Closed"] },
+              "accessibilityOptions": {
+                "wheelchairAccessibleParking": true,
+                "wheelchairAccessibleRestroom": false
+              },
+              "reviews": [
+                {
+                  "authorAttribution": { "displayName": "John Doe", "uri": "http://example.com" },
+                  "rating": 5,
+                  "text": { "text": "Great place!" },
+                  "publishTime": "2023-01-01T00:00:00Z",
+                  "relativePublishTimeDescription": "1 year ago"
+                }
+              ]
+            }
+          ]
+        }
+        """;
+
+    ResponseEntity<String> mockResponse = new ResponseEntity<>(jsonResponse, HttpStatus.OK);
+    given(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(String.class)))
+        .willReturn(mockResponse);
+
+    given(kitchenRepository.save(any(Kitchen.class)))
+        .willAnswer(invocation -> invocation.getArgument(0));
+    given(ratingRepository.save(any(Rating.class)))
+        .willAnswer(invocation -> invocation.getArgument(0));
+
+    // Action
+    List<TempInfo> result = kitchenService.fetchAllKitchens();
+
+    // Verifu
+    assertNotNull(result);
+    assertEquals(1, result.size());
+    assertEquals("Community Kitchen-West Harlem", result.get(0).getDisplayName());
+    verify(kitchenRepository, times(1)).save(any(Kitchen.class));
+    verify(ratingRepository, times(1)).save(any(Rating.class));
+  }
+
+  @Test
+  @Order(8)
+  public void fetchAllKitchens_NoDataFound_ThrowsException() throws Exception {
+    String jsonResponse = "{}";
+
+    ResponseEntity<String> mockResponse = new ResponseEntity<>(jsonResponse, HttpStatus.OK);
+
+    given(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(String.class)))
+        .willReturn(mockResponse);
+
+    // Verify
+    Exception exception = assertThrows(RuntimeException.class,
+        () -> kitchenService.fetchAllKitchens());
+    assertTrue(exception.getMessage().contains("No data found"));
+    verify(kitchenRepository, never()).save(any(Kitchen.class));
+  }
+
+
+  @Test
+  @Order(9)
+  public void fetchAllKitchens_WeekdayDescriptionsConditions() throws Exception {
+    String jsonResponse = """
+        {
+          "places": [
+            {
+              "id": 13,
+              "displayName": { "text": "Kitchen A" },
+              "formattedAddress": "789 Broadway",
+              "location": { "latitude": 40.7128, "longitude": -74.0060 },
+              "regularOpeningHours": {
+                "weekdayDescriptions": ["Monday: 9 AM - 5 PM", "Tuesday: 9 AM - 5 PM"]
+              }
+            },
+            {
+              "id": 14,
+              "displayName": { "text": "Kitchen B" },
+              "formattedAddress": "123 Main St",
+              "location": { "latitude": 40.7128, "longitude": -74.0060 },
+              "regularOpeningHours": {
+                "weekdayDescriptions": []
+              }
+            },
+            {
+              "id": 15,
+              "displayName": { "text": "Kitchen C" },
+              "formattedAddress": "456 Park Ave",
+              "location": { "latitude": 40.7128, "longitude": -74.0060 },
+              "regularOpeningHours": null
+            }
+          ]
+        }
+        """;
+
+    ResponseEntity<String> mockResponse = new ResponseEntity<>(jsonResponse, HttpStatus.OK);
+    given(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(String.class)))
+        .willReturn(mockResponse);
+
+    given(kitchenRepository.save(any(Kitchen.class)))
+        .willAnswer(invocation -> invocation.getArgument(0));
+
+    // Action
+    List<TempInfo> result = kitchenService.fetchAllKitchens();
+
+    // Verify
+    assertNotNull(result);
+    assertEquals(3, result.size());
+
+    TempInfo kitchenA = result.get(0);
+    assertEquals("Kitchen A", kitchenA.getDisplayName());
+    assertTrue(kitchenA.getOperatingHours().contains("Monday: 9 AM - 5 PM"));
+    assertTrue(kitchenA.getOperatingHours().contains("Tuesday: 9 AM - 5 PM"));
+
+    TempInfo kitchenB = result.get(1);
+    assertEquals("Kitchen B", kitchenB.getDisplayName());
+    assertEquals("", kitchenB.getOperatingHours());
+
+    TempInfo kitchenC = result.get(2);
+    assertEquals("Kitchen C", kitchenC.getDisplayName());
+    assertEquals("", kitchenC.getOperatingHours());
+
+    verify(kitchenRepository, times(3)).save(any(Kitchen.class));
+  }
+
+  @Test
+  @Order(1)
+  public void fetchAllKitchens_AccessibilityFeaturesHandling() throws Exception {
+    String jsonResponse = """
+        {
+          "places": [
+            {
+              "id": 30,
+              "displayName": { "text": "Kitchen A" },
+              "formattedAddress": "123 Main St",
+              "location": { "latitude": 40.7128, "longitude": -74.0060 },
+              "accessibilityOptions": {
+                "wheelchairAccessibleParking": true,
+                "wheelchairAccessibleEntrance": true,
+                "wheelchairAccessibleSeating": false
+              }
+            },
+            {
+              "id": 31,
+              "displayName": { "text": "Kitchen B" },
+              "formattedAddress": "456 Park Ave",
+              "location": { "latitude": 40.7128, "longitude": -74.0060 },
+              "accessibilityOptions": {
+                "wheelchairAccessibleParking": false,
+                "wheelchairAccessibleEntrance": false
+              }
+            },
+            {
+              "id": 32,
+              "displayName": { "text": "Kitchen C" },
+              "formattedAddress": "789 Broadway",
+              "location": { "latitude": 40.7128, "longitude": -74.0060 }
+            }
+          ]
+        }
+        """;
+
+    ResponseEntity<String> mockResponse = new ResponseEntity<>(jsonResponse, HttpStatus.OK);
+    given(restTemplate.postForEntity(anyString(), any(HttpEntity.class), eq(String.class)))
+        .willReturn(mockResponse);
+
+    given(kitchenRepository.save(any(Kitchen.class)))
+        .willAnswer(invocation -> invocation.getArgument(0));
+
+    // Action
+    List<TempInfo> result = kitchenService.fetchAllKitchens();
+
+    // verify
+    assertNotNull(result);
+    assertEquals(3, result.size());
+
+    TempInfo kitchenA = result.get(0);
+    assertEquals("Kitchen A", kitchenA.getDisplayName());
+    assertTrue(kitchenA.getAccessibilityOption().contains("Wheelchair accessible parking"));
+    assertTrue(kitchenA.getAccessibilityOption().contains("Wheelchair accessible entrance"));
+    assertFalse(kitchenA.getAccessibilityOption().contains("Wheelchair accessible seating"));
+
+    TempInfo kitchenB = result.get(1);
+    assertEquals("Kitchen B", kitchenB.getDisplayName());
+    assertFalse(kitchenB.getAccessibilityOption().contains("Wheelchair accessible parking"));
+    assertFalse(kitchenB.getAccessibilityOption().contains("Wheelchair accessible entrance"));
+    assertFalse(kitchenB.getAccessibilityOption().contains("Wheelchair accessible seating"));
+
+    TempInfo kitchenC = result.get(2);
+    assertEquals("Kitchen C", kitchenC.getDisplayName());
+    assertEquals("", kitchenC.getAccessibilityOption());
+
+    verify(kitchenRepository, times(3)).save(any(Kitchen.class));
+  }
+
+
+
 }
+
+
+
