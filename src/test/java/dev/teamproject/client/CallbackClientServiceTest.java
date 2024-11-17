@@ -24,10 +24,9 @@ class CallbackClientServiceTest {
 
   @BeforeEach
   public void setup() {
-    // Initialize the mock and service
     mockPublisher = mock(ApplicationEventPublisher.class);
     callbackClientService = new CallbackClientService(mockPublisher);
-    // Create a shared Kitchen object
+
     kitchen = Kitchen.builder()
         .kitchenId(1L)
         .name("Kitchen1")
@@ -69,12 +68,11 @@ class CallbackClientServiceTest {
   void testPublishedEventContainsCorrectKitchen() {
     callbackClientService.notifyExternalService(kitchen);
 
-    // Capture the published event
     ArgumentCaptor<KitchenCreatedEvent> eventCaptor =
         ArgumentCaptor.forClass(KitchenCreatedEvent.class);
     verify(mockPublisher).publishEvent(eventCaptor.capture());
 
-    // Assert: Verify event details
+    // Verify
     KitchenCreatedEvent publishedEvent = eventCaptor.getValue();
     assertNotNull(publishedEvent, "The published event should not be null");
     assertEquals(callbackClientService, publishedEvent.getSource(),
