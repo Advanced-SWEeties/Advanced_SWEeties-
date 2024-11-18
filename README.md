@@ -215,6 +215,9 @@ mvn spring-boot:run
 
 ---
 
+## Differnces from the original proposal
+- Instead of providing a list of top-rated kitchens which are sorted using a combination of user ratings and geographical location, we will just use the ratings to sort the kitchens which aligns more with the name of this endpoint, and also provide a count parameter for the user to specify the number of kitchens they want to see.
+
 ## Running the Application
 
 To run the application locally, use the following commands:

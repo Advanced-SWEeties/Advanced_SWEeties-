@@ -146,11 +146,6 @@ public class KitchenServiceImpl implements KitchenService {
     kitchenRepository.deleteById(id);
   }
 
-  @Override
-  public List<Kitchen> topRatedKitchens() {
-    return kitchenRepository.findTop20ByOrderByRatingDesc();
-  }
-
   /**
    * Fetches soup kitchens in New York City from the Google Places API and saves
    * them to the database. This method sends a request to the Google Places API

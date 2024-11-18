@@ -125,9 +125,6 @@ public class UserServiceImpl implements UserService {
     // avoid large count causing out of bound exception
     count = Math.min(count, allKitchens.size());
     for (int i = 0; i < count; i++) {
-      if (pq.isEmpty()) {
-        break;
-      }
       nearestKitchens.add(pq.poll());
     }
     return nearestKitchens;

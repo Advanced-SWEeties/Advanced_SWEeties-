@@ -10,6 +10,7 @@ import static org.mockito.BDDMockito.given;
 import dev.teamproject.model.Kitchen;
 import dev.teamproject.model.UserLocation;
 import dev.teamproject.repository.KitchenRepository;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,7 +74,6 @@ class UserServiceImplTest {
         }
         """;
 
-
   @BeforeEach
   void setUp() {
     allKitchens = kitchenRepository.findAll();
@@ -98,6 +98,19 @@ class UserServiceImplTest {
 
     assertNull(userServiceImpl.getUserLocation(ADDRESS),
         "Expected null when status is ZERO_RESULTS");
+  }
+
+  @Test
+  public void getUserLocation_ThrowsRuntimeExceptionTest() {
+    given(restTemplate.getForEntity(anyString(), eq(String.class)))
+        .willThrow(new RuntimeException("Simulated API failure"));
+
+    // Action and verify
+    Exception exception = assertThrows(RuntimeException.class,
+        () -> userServiceImpl.getUserLocation(ADDRESS));
+
+    // Verify
+    assertEquals("java.lang.RuntimeException: Simulated API failure", exception.getMessage());
   }
 
   @Test
@@ -130,6 +143,20 @@ class UserServiceImplTest {
     assertNull(result, "Expected null when getUserLocation returns null.");
   }
 
+  @Test
+  public void getNearestKitchens_PqEmptyTest() {
+    // Given: Address resolves successfully
+    given(restTemplate.getForEntity(anyString(), eq(String.class)))
+        .willReturn(new ResponseEntity<>(SINGLE_RESPONSE, HttpStatus.OK));
+
+    List<Kitchen> allKitchens = new ArrayList<>();
+
+    // Action
+    List<Kitchen> result = userServiceImpl.getNearestKitchens(ADDRESS, allKitchens, 5);
+
+    // Verify
+    assertEquals(0, result.size(), "Expected no kitchens returned when priority queue is empty");
+  }
 
   @Test
   public void getNearestKitchensTest() {

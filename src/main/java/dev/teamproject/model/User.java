@@ -2,12 +2,14 @@ package dev.teamproject.model;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import lombok.Data;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Represents a User entity in the application.
  * This class contains details of a User, including his userId, username, password, apiKey and type.
  */
+@Data
 @SpringBootApplication
 public class User {
   private static Long userIdCounter = 0L; // Static variable to keep track of user IDs
@@ -45,6 +47,10 @@ public class User {
     this.password = password;
   }
 
+  public String getPassword() {
+    return password;
+  }
+
   public void setApiKey(String apiKey) {
     this.apiKey = apiKey;
   }
@@ -52,6 +58,7 @@ public class User {
   public String getApiKey() {
     return apiKey;
   }
+
 
   /**
    * Function to log in a user with the provided username and password.
