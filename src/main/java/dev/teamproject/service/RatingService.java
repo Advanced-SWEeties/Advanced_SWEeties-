@@ -10,8 +10,9 @@ import java.util.List;
  *  various info about ratings.
  */
 public interface RatingService {
+  Rating saveRating(Rating rating);
 
   List<Rating> getAllRatings();
-  
+
   public double getPredictedWaitingTime(Long kitchenId);
 }

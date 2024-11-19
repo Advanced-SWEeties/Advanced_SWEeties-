@@ -6,6 +6,7 @@ import dev.teamproject.service.RatingService;
 import java.util.List;
 import java.util.OptionalDouble;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -25,6 +26,19 @@ public class RatingServiceImpl implements RatingService {
   public RatingServiceImpl(RatingRepository ratingRepository) {
     this.ratingRepository = ratingRepository;
   }
+
+  /**
+   * Adds a new rating for a given kitchen.
+   * @param rating the Rating object containing the user's feedback
+   * @return the saved Rating object
+   */
+  public Rating saveRating(Rating rating) {
+
+    // Save the rating to the database
+    Rating savedRating = ratingRepository.save(rating);
+    return savedRating;
+  }
+
 
   public List<Rating> getAllRatings() {
     return ratingRepository.findAll();
