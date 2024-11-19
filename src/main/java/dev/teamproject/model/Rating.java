@@ -36,6 +36,8 @@ public class Rating {
 
   private String userId;
 
+  private Long waitSec;
+
   @NotBlank
   private String userName;
   @NotNull

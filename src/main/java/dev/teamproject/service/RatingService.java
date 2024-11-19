@@ -12,4 +12,6 @@ import java.util.List;
 public interface RatingService {
 
   List<Rating> getAllRatings();
+  
+  public double getPredictedWaitingTime(Long kitchenId);
 }
