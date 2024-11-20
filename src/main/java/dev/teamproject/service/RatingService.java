@@ -14,5 +14,11 @@ public interface RatingService {
 
   List<Rating> getAllRatings();
 
+  List<Rating> getKitchenRatings(Long kitchenId);
+
   public double getPredictedWaitingTime(Long kitchenId);
+
+  public Rating updateRating(Rating rating, long id);
+
+  public void deleteRating(long id);
 }

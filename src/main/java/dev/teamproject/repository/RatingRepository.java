@@ -13,11 +13,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RatingRepository extends JpaRepository<Rating, Long> {
 
-    /**
-     * Find all ratings by kitchenId.
-     *
-     * @param kitchenId the ID of the kitchen
-     * @return a list of ratings associated with the given kitchenId
-     */
-    List<Rating> findByKitchenId(Long kitchenId);
+  /**
+   * Find all ratings by kitchenId.
+   *
+   * @param kitchenId the ID of the kitchen
+   * @return a list of ratings associated with the given kitchenId
+   */
+  List<Rating> findByKitchenId(Long kitchenId);
 }
