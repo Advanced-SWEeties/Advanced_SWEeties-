@@ -25,8 +25,6 @@ public interface KitchenService {
 
   List<Kitchen> searchKitchen(String kitchenName);
 
-  List<Kitchen> topRatedKitchens();
-
   void deleteKitchen(long id);
 
   List<TempInfo> fetchAllKitchens();

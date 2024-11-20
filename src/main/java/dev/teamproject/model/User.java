@@ -12,17 +12,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import lombok.Data;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Represents a User entity in the application.
  * This class contains details of a User, including their userId, username, 
  * password, apiKey, and type.
  */
-@Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
-@Builder
+@SpringBootApplication
 public class User {
 
   @Id
