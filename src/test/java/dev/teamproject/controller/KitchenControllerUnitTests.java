@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -17,11 +18,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.teamproject.model.Kitchen;
+import dev.teamproject.model.Rating;
 import dev.teamproject.model.UserLocation;
 import dev.teamproject.service.KitchenService;
 import dev.teamproject.service.OpenAiService;
 import dev.teamproject.service.RatingService;
 import dev.teamproject.service.UserService;
+import dev.teamproject.service.impl.RatingServiceImpl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +70,9 @@ public class KitchenControllerUnitTests {
   Kitchen kitchen;
   Kitchen kitchen2;
 
+  Rating rating1;
+  Rating rating2;
+
   UserLocation userLocation;
 
   private static final String ADDRESS = "Columbia University";
@@ -98,6 +104,27 @@ public class KitchenControllerUnitTests {
         .latitude(40.8075)
         .longitude(-73.9626)
         .build();
+
+    
+    rating1 = Rating.builder()
+            .ratingId(1L)
+            .kitchenId(1L)
+            .userId("user1")
+            .userName("Customer One")
+            .rating(5)
+            .waitSec(120L)
+            .comments("Great service!")
+            .build();
+
+    rating2 = Rating.builder()
+            .ratingId(2L)
+            .kitchenId(1L)
+            .userId("user2")
+            .userName("Customer Two")
+            .rating(4)
+            .waitSec(100L)
+            .comments("Good service.")
+            .build();
   }
 
   //Post Controller
@@ -464,4 +491,125 @@ public class KitchenControllerUnitTests {
             + "and high-quality food")))
         .andExpect(content().string(containsString("at 116 street")));
   }
+  
+  @Test
+  @Order(18)
+  public void addRatingTest() throws Exception {
+    // Precondition
+    given(ratingService.saveRating(any(Rating.class))).willReturn(rating1);
+
+    // Action
+    ResultActions response = mockMvc.perform(post("/api/ratings/add")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(rating1)));
+
+    // Verify
+    response.andExpect(status().isCreated())
+            .andExpect(content().string("Rating added successfully."));
+  }
+
+  @Test
+  @Order(19)
+  public void updateRatingTest() throws Exception {
+    // Precondition
+    rating1.setComments("Updated comment.");
+    given(ratingService.updateRating(any(Rating.class), any(Long.class))).willReturn(rating1);
+
+    // Action
+    ResultActions response = mockMvc.perform(put("/api/ratings/update")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(rating1)));
+
+    // Verify
+    response.andExpect(status().isOk())
+            .andExpect(content().string("Rating updated successfully."));
+  }
+  
+  @Test
+  @Order(20)
+  public void updateRatingNotFoundTest() throws Exception {
+    // Precondition
+    given(ratingService.updateRating(any(Rating.class), any(Long.class)))
+            .willThrow(new RuntimeException("Rating to update is not found"));
+
+    // Action
+    ResultActions response = mockMvc.perform(put("/api/ratings/update")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(rating1)));
+
+    // Verify
+    response.andExpect(status().isNotFound())
+            .andExpect(content().string("Rating to update is not found"));
+  }
+
+  @Test
+  @Order(21)
+  public void deleteRatingTest() throws Exception {
+    // Precondition
+    willDoNothing().given(ratingService).deleteRating(any(Long.class));
+
+    // Action
+    ResultActions response = mockMvc.perform(delete("/api/ratings/delete?ratingId={id}",
+            rating1.getRatingId()));
+
+    // Verify
+    response.andExpect(status().isOk())
+            .andExpect(content().string("Rating deleted successfully."));
+  }
+
+  @Test
+  @Order(22)
+  public void deleteRatingNotFoundTest() throws Exception {
+    // Precondition
+    willDoNothing().given(ratingService).deleteRating(any(Long.class));
+    doThrow(new RuntimeException("Rating to delete is not found"))
+            .when(ratingService).deleteRating(any(Long.class));
+
+    // Action
+    ResultActions response = mockMvc.perform(delete("/api/ratings/delete?ratingId={id}",
+            rating1.getRatingId()));
+
+    // Verify
+    response.andExpect(status().isNotFound())
+            .andExpect(content().string("Rating to delete is not found"));
+  }
+
+  @Test
+  @Order(23)
+  public void retrieveKitchenRatingsTest() throws Exception {
+    // Precondition
+    given(ratingService.getKitchenRatings(any(Long.class)))
+            .willReturn(List.of(rating1, rating2));
+
+    // Action
+    ResultActions response = mockMvc.perform(
+            get("/api/ratings/retrieveKitchenRatings?kitchenId={id}",
+            rating1.getKitchenId()));
+
+    // Verify
+    response.andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].userId", is(rating1.getUserId())))
+            .andExpect(jsonPath("$[0].comments", is(rating1.getComments())))
+            .andExpect(jsonPath("$[1].userId", is(rating2.getUserId())))
+            .andExpect(jsonPath("$[1].comments", is(rating2.getComments())));
+  }
+
+  @Test
+  @Order(24)
+  public void retrieveKitchenRatingsNotFoundTest() throws Exception {
+    // Precondition
+    given(ratingService.getKitchenRatings(any(Long.class)))
+            .willReturn(List.of());
+
+    // Action
+    ResultActions response = mockMvc.perform(
+            get("/api/ratings/retrieveKitchenRatings?kitchenId={id}",
+            rating1.getKitchenId()));
+
+    // Verify
+    response.andExpect(status().isNotFound())
+            .andExpect(content().string("No ratings found for the specified kitchen."));
+  }
+
+
 }
