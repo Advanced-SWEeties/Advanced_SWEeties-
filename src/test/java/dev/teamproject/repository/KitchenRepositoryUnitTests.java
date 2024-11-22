@@ -67,22 +67,24 @@ public class KitchenRepositoryUnitTests {
   @Order(2)
   public void testGetKitchenById() {
     System.out.println(kitchenRepository.findAll());
-    Optional<Kitchen> optionalKitchen = kitchenRepository.findByKitchenId(5L);
+    Long start = kitchenRepository.findFirstByOrderByKitchenIdAsc().getKitchenId();
+    Optional<Kitchen> optionalKitchen = kitchenRepository.findByKitchenId(start + 1);
     Assertions.assertThat(optionalKitchen).isPresent();
     Kitchen kitchen = optionalKitchen.get();
     System.out.println(kitchen);
-    Assertions.assertThat(kitchen.getKitchenId()).isEqualTo(5L);
+    Assertions.assertThat(kitchen.getKitchenId()).isEqualTo(start + 1);
   }
 
   @Test
   @DisplayName("Test 3: Get Kitchen By Name Test")
   @Order(3)
   public void getKitchenByNameTest() {
+    Long start = kitchenRepository.findFirstByOrderByKitchenIdAsc().getKitchenId();
     Optional<Kitchen> optionalKitchen = kitchenRepository.findByName("Kitchen1");
     Assertions.assertThat(optionalKitchen).isPresent();
     Kitchen kitchen = optionalKitchen.get();
     System.out.println(kitchen);
-    Assertions.assertThat(kitchen.getKitchenId()).isEqualTo(8L);
+    Assertions.assertThat(kitchen.getKitchenId()).isEqualTo(start);
   }
 
   @Test
@@ -113,7 +115,8 @@ public class KitchenRepositoryUnitTests {
   @Transactional
   public void updateKitchenTest() {
     System.out.println(kitchenRepository.findAll());
-    Optional<Kitchen> optionalKitchen = kitchenRepository.findById(17L);
+    Long start = kitchenRepository.findFirstByOrderByKitchenIdAsc().getKitchenId();
+    Optional<Kitchen> optionalKitchen = kitchenRepository.findById(start);
     Assertions.assertThat(optionalKitchen).isPresent();
     Kitchen kitchen = optionalKitchen.get();
     kitchen.setContactPhone("2345678901");
@@ -129,8 +132,9 @@ public class KitchenRepositoryUnitTests {
   @Transactional
   public void deleteKitchenTest() {
     System.out.println(kitchenRepository.findAll());
-    kitchenRepository.deleteById(20L);
-    Optional<Kitchen> kitchenOptional = kitchenRepository.findById(20L);
+    Long start = kitchenRepository.findFirstByOrderByKitchenIdAsc().getKitchenId();
+    kitchenRepository.deleteById(start);
+    Optional<Kitchen> kitchenOptional = kitchenRepository.findById(start);
     Assertions.assertThat(kitchenOptional).isEmpty();
   }
 }

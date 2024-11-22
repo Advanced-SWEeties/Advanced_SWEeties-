@@ -23,4 +23,6 @@ public interface KitchenRepository extends JpaRepository<Kitchen, Long> {
   Optional<Kitchen> findByKitchenId(long id);
 
   List<Kitchen> findTop20ByOrderByRatingDesc();
+
+  Kitchen findFirstByOrderByKitchenIdAsc();
 }
