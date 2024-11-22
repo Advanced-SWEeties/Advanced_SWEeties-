@@ -8,9 +8,12 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import dev.teamproject.model.Kitchen;
 import dev.teamproject.model.Rating;
+import dev.teamproject.model.User;
+import dev.teamproject.repository.KitchenRepository;
 import dev.teamproject.repository.RatingRepository;
-import dev.teamproject.service.impl.RatingServiceImpl;
+import dev.teamproject.repository.UserRepository;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +36,12 @@ public class RatingServiceImplUnitTest {
   @Mock
   private RatingRepository ratingRepository;
 
+  @Mock
+  private UserRepository userRepository;
+
+  @Mock
+  private KitchenRepository kitchenRepository;
+
   @InjectMocks
   private RatingServiceImpl ratingService;
 
@@ -40,18 +49,54 @@ public class RatingServiceImplUnitTest {
   private Rating rating2;
   private Rating rating3;
 
+  private Kitchen kitchen1;
+  private Kitchen kitchen2;
+  private Kitchen kitchen3;
+
+  private User user1;
+  private User user2;
+  private User user3;
+
   /**
    * Setup method to initialize the test data.
    */
   @BeforeEach
   public void setup() {
     MockitoAnnotations.openMocks(this);
+    kitchen1 = new Kitchen();
+    kitchen1.setKitchenId(1L);
+    kitchen1.setName("Test Kitchen 1");
+    kitchenRepository.save(kitchen1);
+
+    user1 = new User();
+    user1.setUserId(1L);
+    user1.setUsername("Test User 1");
+    userRepository.save(user1);
+
+    kitchen2 = new Kitchen();
+    kitchen2.setKitchenId(2L);
+    kitchen2.setName("Test Kitchen 2");
+    kitchenRepository.save(kitchen2);
+
+    user2 = new User();
+    user2.setUserId(2L);
+    user2.setUsername("Test User 2");
+    userRepository.save(user2);
+
+    kitchen3 = new Kitchen();
+    kitchen3.setKitchenId(1L);
+    kitchen3.setName("Test Kitchen 3");
+    kitchenRepository.save(kitchen3);
+
+    user3 = new User();
+    user3.setUserId(3L);
+    user3.setUsername("Test User 3");
+    userRepository.save(user3);
 
     rating1 = Rating.builder()
         .ratingId(1L)
-        .kitchenId(1L)
-        .userId("user1")
-        .userName("Customer One")
+        .kitchen(kitchen1)
+        .user(user1)
         .rating(5)
         .waitSec(120L)
         .comments("Great!")
@@ -59,19 +104,17 @@ public class RatingServiceImplUnitTest {
 
     rating2 = Rating.builder()
         .ratingId(2L)
-        .kitchenId(1L)
-        .userId("user2")
-        .userName("Customer Two")
+        .kitchen(kitchen2)
+        .user(user2)
         .rating(4)
         .waitSec(150L)
         .comments("Good.")
         .build();
 
     rating3 = Rating.builder()
-        .ratingId(3L)
-        .kitchenId(2L)
-        .userId("user3")
-        .userName("Customer Three")
+        .kitchen(kitchen3)
+        .kitchen(kitchen3)
+        .user(user3)
         .rating(3)
         .waitSec(200L)
         .comments("Average.")
@@ -86,7 +129,7 @@ public class RatingServiceImplUnitTest {
     Rating savedRating = ratingService.saveRating(rating1);
 
     assertThat(savedRating).isNotNull();
-    assertEquals("Customer One", savedRating.getUserName());
+    assertEquals("Test User 1", savedRating.getUserName());
     verify(ratingRepository, times(1)).save(rating1);
   }
 
@@ -106,7 +149,7 @@ public class RatingServiceImplUnitTest {
   @Test
   @Order(3)
   public void getPredictedWaitingTimeTest() {
-    given(ratingRepository.findByKitchenId(1L)).willReturn(Arrays.asList(rating1, rating2));
+    given(ratingRepository.findByKitchen_KitchenId(1L)).willReturn(Arrays.asList(rating1, rating2));
 
     double averageWaitTime = ratingService.getPredictedWaitingTime(1L);
 
@@ -117,7 +160,7 @@ public class RatingServiceImplUnitTest {
   @Order(4)
   public void getPredictedWaitingTimeTest_NoRatings() {
 
-    given(ratingRepository.findByKitchenId(1L)).willReturn(Collections.emptyList());
+    given(ratingRepository.findByKitchen_KitchenId(1L)).willReturn(Collections.emptyList());
 
     double averageWaitTime = ratingService.getPredictedWaitingTime(1L);
     
@@ -127,16 +170,19 @@ public class RatingServiceImplUnitTest {
   @Test
   @Order(5)
   public void getPredictedWaitingTimeTest_NullWaitSec() {
+    User user4 = new User();
+    user4.setUserId(4L);
+    user4.setUsername("Test User 4");
+
     Rating ratingWithNullWaitSec = Rating.builder()
         .ratingId(4L)
-        .kitchenId(1L)
-        .userId("user4")
-        .userName("User Four")
+        .kitchen(kitchen1)
+        .user(user4)
         .rating(5)
         .waitSec(null)
         .build();
 
-    given(ratingRepository.findByKitchenId(1L))
+    given(ratingRepository.findByKitchen_KitchenId(1L))
         .willReturn(Arrays.asList(rating1, ratingWithNullWaitSec));
 
     double averageWaitTime = ratingService.getPredictedWaitingTime(1L);
@@ -148,8 +194,8 @@ public class RatingServiceImplUnitTest {
   @Order(6)
   public void saveRatingTest_InvalidRating() {
     Rating invalidRating = Rating.builder()
-        .kitchenId(1L)
-        .userName("")
+        .kitchen(kitchen2)
+        .user(user2)
         .rating(6) // Invalid rating (greater than 5)
         .build();
 
@@ -162,25 +208,27 @@ public class RatingServiceImplUnitTest {
   @Order(7)
   public void getKitchenRatingsTest() {
     List<Rating> kitchenRatings = Arrays.asList(rating1, rating2);
-    given(ratingRepository.findByKitchenId(1L)).willReturn(kitchenRatings);
+    given(ratingRepository.findByKitchen_KitchenId(1L)).willReturn(kitchenRatings);
 
     List<Rating> ratings = ratingService.getKitchenRatings(1L);
 
     assertThat(ratings).isNotNull();
     assertEquals(2, ratings.size());
-    assertEquals(1L, ratings.get(0).getKitchenId());
-    assertEquals("Customer One", ratings.get(0).getUserName());
-    verify(ratingRepository, times(1)).findByKitchenId(1L);
+    assertEquals(1L, ratings.get(0).getKitchen().getKitchenId());
+    assertEquals("Test User 1", ratings.get(0).getUserName());
+    verify(ratingRepository, times(1)).findByKitchen_KitchenId(1L);
   }
 
   @Test
   @Order(8)
   public void updateRatingTest() {
+    User user1Updated = new User();
+    user1Updated.setUserId(3L);
+    user1Updated.setUsername("Test User 1 updated");
     Rating updatedRating = Rating.builder()
         .ratingId(1L)
-        .kitchenId(1L)
-        .userId("user1_updated")
-        .userName("Customer One Updated")
+        .kitchen(kitchen1)
+        .user(user1Updated)
         .rating(4)
         .waitSec(100L)
         .comments("Updated Comment")
@@ -192,8 +240,8 @@ public class RatingServiceImplUnitTest {
     Rating result = ratingService.updateRating(updatedRating, 1L);
     
     assertThat(result).isNotNull();
-    assertEquals("Customer One Updated", result.getUserName());
-    assertEquals("user1_updated", result.getUserId());
+    assertEquals("Test User 1 updated", result.getUserName());
+    assertEquals("Test User 1 updated", result.getUser().getUsername());
     assertEquals(4, result.getRating());
     assertEquals(100L, result.getWaitSec());
     assertEquals("Updated Comment", result.getComments());
@@ -204,11 +252,13 @@ public class RatingServiceImplUnitTest {
   @Test
   @Order(9)
   public void updateRatingTest_RatingNotFound() {
+    User user1Updated = new User();
+    user1Updated.setUserId(3L);
+    user1Updated.setUsername("Test User 1 updated");
     Rating updatedRating = Rating.builder()
         .ratingId(1L)
-        .kitchenId(1L)
-        .userId("user1_updated")
-        .userName("Customer One Updated")
+        .kitchen(kitchen1)
+        .user(user1Updated)
         .rating(4)
         .waitSec(100L)
         .comments("Updated Comment")

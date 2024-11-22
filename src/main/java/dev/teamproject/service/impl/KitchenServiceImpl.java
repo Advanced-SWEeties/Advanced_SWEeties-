@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
@@ -23,6 +22,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -31,11 +31,12 @@ import org.springframework.web.client.RestTemplate;
  */
 @Primary
 @Service
+@Transactional
 public class KitchenServiceImpl implements KitchenService {
 
   private final KitchenRepository  kitchenRepository;
   private final RatingRepository ratingRepository;
-  private CallbackClientService callbackClientService;
+  private final CallbackClientService callbackClientService;
   private final RestTemplate restTemplate;
   private final String apiKey;
 
@@ -139,10 +140,13 @@ public class KitchenServiceImpl implements KitchenService {
 
   @Override
   public void deleteKitchen(long id) {
-    Optional<Kitchen> toDelete = kitchenRepository.findByKitchenId(id);
-    if (toDelete.isEmpty()) {
-      throw new RuntimeException("Kitchen not exists with given id: " + id);
+    Kitchen kitchen = kitchenRepository.findByKitchenId(id)
+            .orElseThrow(() -> new RuntimeException("Kitchen not exists with given id: " + id));
+    List<Rating> ratings = kitchen.getRatings();
+    if (ratings != null && !ratings.isEmpty()) {
+      ratings.clear();
     }
+
     kitchenRepository.deleteById(id);
   }
 
@@ -247,8 +251,7 @@ public class KitchenServiceImpl implements KitchenService {
         JsonNode reviews = place.path("reviews");
         if (reviews.isArray()) {
           for (JsonNode review : reviews) {
-            String randomUserId = UUID.randomUUID().toString();
-
+            //String randomUserId = UUID.randomUUID().toString();
             String authorName = review.path("authorAttribution")
                     .path("displayName").asText();
             String authorUri = review.path("authorAttribution")
@@ -267,8 +270,7 @@ public class KitchenServiceImpl implements KitchenService {
 
             // rating entity mapping
             Rating ratingEntity = Rating.builder()
-                    .kitchenId(kitchen.getKitchenId())
-                    .userId(randomUserId)
+                    .kitchen(kitchen)
                     .userName(authorName)
                     .rating(reviewerRating)
                     .comments(reviewText)

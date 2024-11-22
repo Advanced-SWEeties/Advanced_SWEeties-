@@ -1,7 +1,17 @@
 package dev.teamproject.model;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import lombok.Data;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -10,15 +20,21 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * This class contains details of a User, including his userId, username, password, apiKey and type.
  */
 @Data
+@Entity
 @SpringBootApplication
+@Table(name = "\"user\"")
 public class User {
   private static Long userIdCounter = 0L; // Static variable to keep track of user IDs
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long userId;
   private String username;
   private String password;
   private String apiKey;
   private String userType; 
-  private LocalDateTime accountCreationTime; 
+  private LocalDateTime accountCreationTime;
+  @OneToMany(mappedBy = "user",  cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Rating> ratings = new ArrayList<>();
 
   /**
    * Creates a new user account with the specified username and password.
@@ -28,36 +44,16 @@ public class User {
    * @param password the password for the new account
    */
   public void createAccount(String username, String password) {
-    this.userId = generateUserId(); 
     this.username = username;
     this.password = password;
     this.accountCreationTime = LocalDateTime.now(); 
     this.setUserType();
   }
 
-  private Long generateUserId() {
-    return ++userIdCounter;
-  }
+  //  private Long generateUserId() {
+  //    return ++userIdCounter;
+  //  }
 
-  public String getUsername() {
-    return username;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setApiKey(String apiKey) {
-    this.apiKey = apiKey;
-  }
-
-  public String getApiKey() {
-    return apiKey;
-  }
 
 
   /**
@@ -97,7 +93,25 @@ public class User {
     }
   }
 
-  public String getUserType() {
-    return userType;
+  @Override
+  public String toString() {
+    return this.getUserId() + " " + this.getUsername() + " " + this.getUserType() + ".";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    return Objects.equals(this.getUserId(), ((User) o).getUserId());
+  }
+
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
   }
 }

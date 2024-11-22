@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.teamproject.model.Kitchen;
 import dev.teamproject.model.Rating;
+import dev.teamproject.model.User;
 import dev.teamproject.model.UserLocation;
 import dev.teamproject.service.KitchenService;
 import dev.teamproject.service.OpenAiService;
@@ -73,6 +74,9 @@ public class KitchenControllerUnitTests {
   Rating rating1;
   Rating rating2;
 
+  User user1;
+  User user2;
+
   UserLocation userLocation;
 
   private static final String ADDRESS = "Columbia University";
@@ -99,6 +103,14 @@ public class KitchenControllerUnitTests {
             .address("116 street")
             .contactPhone("987654321").build();
 
+    user1 = new User();
+    user1.setUserId(1L);
+    user1.setUsername("Customer One");
+
+    user2 = new User();
+    user2.setUserId(2L);
+    user2.setUsername("Customer Two");
+
     userLocation = UserLocation.builder()
         .address(ADDRESS)
         .latitude(40.8075)
@@ -108,9 +120,8 @@ public class KitchenControllerUnitTests {
     
     rating1 = Rating.builder()
             .ratingId(1L)
-            .kitchenId(1L)
-            .userId("user1")
-            .userName("Customer One")
+            .kitchen(kitchen)
+            .user(user1)
             .rating(5)
             .waitSec(120L)
             .comments("Great service!")
@@ -118,9 +129,8 @@ public class KitchenControllerUnitTests {
 
     rating2 = Rating.builder()
             .ratingId(2L)
-            .kitchenId(1L)
-            .userId("user2")
-            .userName("Customer Two")
+            .kitchen(kitchen)
+            .user(user2)
             .rating(4)
             .waitSec(100L)
             .comments("Good service.")
@@ -584,13 +594,13 @@ public class KitchenControllerUnitTests {
     // Action
     ResultActions response = mockMvc.perform(
             get("/api/ratings/retrieveKitchenRatings?kitchenId={id}",
-            rating1.getKitchenId()));
+            rating1.getKitchen().getKitchenId()));
 
     // Verify
     response.andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].userId", is(rating1.getUserId())))
+            .andExpect(jsonPath("$[0].userName", is(rating1.getUser().getUsername())))
             .andExpect(jsonPath("$[0].comments", is(rating1.getComments())))
-            .andExpect(jsonPath("$[1].userId", is(rating2.getUserId())))
+            .andExpect(jsonPath("$[1].userName", is(rating2.getUser().getUsername())))
             .andExpect(jsonPath("$[1].comments", is(rating2.getComments())));
   }
 
@@ -604,7 +614,7 @@ public class KitchenControllerUnitTests {
     // Action
     ResultActions response = mockMvc.perform(
             get("/api/ratings/retrieveKitchenRatings?kitchenId={id}",
-            rating1.getKitchenId()));
+            rating1.getKitchen().getKitchenId()));
 
     // Verify
     response.andExpect(status().isNotFound())
