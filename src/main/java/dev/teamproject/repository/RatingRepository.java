@@ -19,5 +19,5 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
    * @param kitchenId the ID of the kitchen
    * @return a list of ratings associated with the given kitchenId
    */
-  List<Rating> findByKitchenId(Long kitchenId);
+  List<Rating> findByKitchen_KitchenId(Long kitchenId);
 }
