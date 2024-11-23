@@ -291,4 +291,118 @@ public class KitchenController {
       return new ResponseEntity<>("backend error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  /**
+   * Endpoint: /ratings/add
+   * Method: POST
+   * Request Body: Rating object
+   * Description: Adds a new rating for a specific kitchen.
+   * Response:
+   * 201 Created - Rating added successfully.
+   * 400 Bad Request - Invalid rating details provided.
+   */
+  @PostMapping("/ratings/add")
+  public ResponseEntity<String> addRating(@RequestBody Rating newRating) {
+    try {
+      ratingService.saveRating(newRating);
+      return new ResponseEntity<>("Rating added successfully.", HttpStatus.CREATED);
+    } catch (IllegalArgumentException e) {
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    } catch (Exception e) {
+      return new ResponseEntity<>("backend error", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+   * Endpoint: /ratings/update
+   * Method: PUT
+   * Request Body: Rating object with updated details
+   * Description: Updates an existing rating.
+   * Response:
+   * 200 OK - Rating updated successfully.
+   * 404 Not Found - Rating not found with the given ID.
+   */
+  @PutMapping("/ratings/update")
+  public ResponseEntity<String> updateRating(@RequestBody Rating updatedRating) {
+    try {
+      ratingService.updateRating(updatedRating, updatedRating.getRatingId());
+      return new ResponseEntity<>("Rating updated successfully.", HttpStatus.OK);
+    } catch (RuntimeException e) {
+      return new ResponseEntity<>("Rating to update is not found", HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      return new ResponseEntity<>("backend error", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+   * Endpoint: /ratings/delete
+   * Method: DELETE
+   * Request Param: ratingId
+   * Description: Deletes a rating with the specified ID.
+   * Response:
+   * 200 OK - Rating deleted successfully.
+   * 404 Not Found - Rating not found with the given ID.
+   */
+  @DeleteMapping("/ratings/delete")
+  public ResponseEntity<String> deleteRating(@RequestParam Long ratingId) {
+    try {
+      ratingService.deleteRating(ratingId);
+      return new ResponseEntity<>("Rating deleted successfully.", HttpStatus.OK);
+    } catch (RuntimeException e) {
+      return new ResponseEntity<>("Rating to delete is not found", HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      return new ResponseEntity<>("backend error", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /**
+   * Endpoint: /kitchens/wait_time
+   * Method: GET
+   * Request Param: kitchenId
+   * Description: Fetches the predicted waiting time for a kitchen.
+   * Response:
+   * 200 OK - Returns the predicted waiting time.
+   * 404 Not Found - Kitchen or ratings not found for the given ID.
+   */
+  @GetMapping("/kitchens/wait_time")
+  public ResponseEntity<?> getPredictedWaitTime(@RequestParam Long kitchenId) {
+    try {
+      double waitTime = ratingService.getPredictedWaitingTime(kitchenId);
+      if (waitTime == -1) {
+        return new ResponseEntity<>("No ratings with wait time found for this kitchen.", 
+            HttpStatus.NOT_FOUND);
+      }
+      return new ResponseEntity<>(Map.of("predicted_wait_time", waitTime), HttpStatus.OK);
+    } catch (RuntimeException e) {
+      return new ResponseEntity<>("Kitchen not found", HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      return new ResponseEntity<>("backend error", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  
+  /**
+   * Endpoint: /ratings/retrieveKitchenRatings
+   * Method: GET
+   * Query Parameter: kitchenId
+   * Description: Retrieves all ratings for a specific kitchen by its ID.
+   * Response:
+   * 200 OK - Returns a list of all ratings for the specified kitchen.
+   * 404 Not Found - If no ratings are found for the given kitchen ID.
+   * 500 Internal Server Error - For unexpected backend errors.
+   */
+  @GetMapping("/ratings/retrieveKitchenRatings")
+  public ResponseEntity<?> retrieveKitchenRatings(@RequestParam Long kitchenId) {
+    try {
+      List<Rating> ratings = ratingService.getKitchenRatings(kitchenId);
+      if (ratings == null || ratings.isEmpty()) {
+        return new ResponseEntity<>("No ratings found for the specified kitchen.", 
+            HttpStatus.NOT_FOUND);
+      }
+      return new ResponseEntity<>(ratings, HttpStatus.OK);
+    } catch (RuntimeException e) {
+      return new ResponseEntity<>("Kitchen not found", HttpStatus.NOT_FOUND);
+    } catch (Exception e) {
+      return new ResponseEntity<>("backend error", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

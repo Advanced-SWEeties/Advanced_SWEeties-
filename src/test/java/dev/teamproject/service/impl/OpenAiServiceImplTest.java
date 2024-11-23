@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 
 import dev.teamproject.model.Kitchen;
 import dev.teamproject.model.Rating;
+import dev.teamproject.model.User;
 import dev.teamproject.model.UserLocation;
 import dev.teamproject.service.OpenAiService;
 import java.io.IOException;
@@ -37,6 +38,10 @@ class OpenAiServiceImplTest {
   Rating rating1;
   Rating rating2;
   Rating rating3;
+
+  User user1;
+  User user2;
+  User user3;
 
   UserLocation userLocation;
 
@@ -86,11 +91,22 @@ class OpenAiServiceImplTest {
         .longitude(-73.9626)
         .build();
 
+    user1 = new User();
+    user1.setUserId(1L);
+    user1.setUsername("John Doe");
+
+    user2 = new User();
+    user2.setUserId(2L);
+    user2.setUsername("Jane Smith");
+
+    user3 = new User();
+    user3.setUserId(3L);
+    user3.setUsername("Emily Johnson");
+
     rating1 = Rating.builder()
         .ratingId(1L)
-        .kitchenId(1L)
-        .userId("user123")
-        .userName("John Doe")
+        .kitchen(kitchen)
+        .user(user1)
         .rating(5)
         .comments("The food was absolutely amazing! The service was top-notch.")
         .commentUrl("http://xxxxxxx")
@@ -100,9 +116,8 @@ class OpenAiServiceImplTest {
 
     rating2 = Rating.builder()
         .ratingId(2L)
-        .kitchenId(1L)
-        .userId("user456")
-        .userName("Jane Smith")
+        .kitchen(kitchen)
+        .user(user2)
         .rating(4)
         .comments("Great experience, but the wait time was longer than expected.")
         .commentUrl("http://xxxxxxx")
@@ -112,9 +127,8 @@ class OpenAiServiceImplTest {
 
     rating3 = Rating.builder()
         .ratingId(3L)
-        .kitchenId(2L)
-        .userId("user789")
-        .userName("Emily Johnson")
+        .kitchen(kitchen2)
+        .user(user3)
         .rating(3)
         .comments("Good food, but the ambiance could use some improvement.")
         .commentUrl("http://xxxxxxx")

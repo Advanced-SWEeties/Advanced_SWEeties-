@@ -272,6 +272,28 @@ We have run the tests and generated a coverage report!
   - Delete
 <img width="1042" alt="image" src="https://github.com/user-attachments/assets/acbfdcaf-739c-4574-8016-f9adf4ff000b">
 
+  - Add rating
+<img width="1045" alt="image" src="https://github.com/user-attachments/assets/3b65c57e-2213-4866-adf6-0372f30c8d31">
+
+  - Add another rating
+<img width="1044" alt="image" src="https://github.com/user-attachments/assets/fe6607d4-4987-49aa-bbf2-d22530da49b7">
+
+  - Update a rating
+<img width="1034" alt="image" src="https://github.com/user-attachments/assets/455ce879-77f9-4270-8d35-f13a53b4c017">
+
+  - Retrieve a kitchen's ratings
+    - Please note that here the userName is changed to customer 1 updated already
+<img width="1044" alt="image" src="https://github.com/user-attachments/assets/fbcbf83b-f596-4077-9633-72efbb093730">
+
+  - Delete a rating
+<img width="1048" alt="image" src="https://github.com/user-attachments/assets/3a414028-f952-49c5-8954-d4c9b0378162">
+
+  - Retrieve a kitchen's ratings after deleting ratingId 1
+<img width="1041" alt="image" src="https://github.com/user-attachments/assets/5ef82678-e4e6-4faa-bf5a-5ad3cabe0136">
+
+
+
+
 
 
 

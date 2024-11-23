@@ -1,14 +1,18 @@
 package dev.teamproject.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,6 +51,8 @@ public class Kitchen {
   private Double longitude;
 
   private Double rating;
+  @OneToMany(mappedBy = "kitchen", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Rating> ratings = new ArrayList<>();
 
   @Size(max = 200)
   private String accessibilityFeatures;
@@ -60,8 +66,7 @@ public class Kitchen {
   //  @OneToMany(mappedBy = "kitchen")
   //  private Set<Distributer> distributers;
 
-  //  @OneToMany(mappedBy = "kitchen")
-  // private Set<Rating> Ratings;
+
 
   // getters and setters are generated through @data annotation from lombok
   @Override
@@ -84,5 +89,16 @@ public class Kitchen {
   @Override
   public int hashCode() {
     return getClass().hashCode();
+  }
+
+  /**
+   * This method update the rating of the kitchen.
+   * rating is updated by calculating average rating of all associated ratings.
+   */
+  public void updateAverageRating() {
+    this.rating = ratings.stream()
+            .mapToDouble(Rating::getRating)
+            .average()
+            .orElse(0.0);
   }
 }

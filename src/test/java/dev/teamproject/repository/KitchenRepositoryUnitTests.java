@@ -4,6 +4,8 @@ import dev.teamproject.model.Kitchen;
 import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -11,9 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
-
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Unit testing for kitchen Repository.
@@ -21,113 +22,119 @@ import org.springframework.test.context.ActiveProfiles;
 @DataJpaTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles("test")
-//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class KitchenRepositoryUnitTests {
+
   @Autowired
   private KitchenRepository kitchenRepository;
 
+  /**
+   * Set up three kitchens before each test to ensure consistency.
+   */
+  @BeforeEach
+  public void setup() {
+    kitchenRepository.deleteAll();
+    Kitchen kitchen1 = Kitchen.builder().name("Kitchen1").address("some place")
+            .contactPhone("1234567890").build();
+    Kitchen kitchen2 = Kitchen.builder().name("Kitchen2").address("some place")
+            .contactPhone("1234567890").build();
+    Kitchen kitchen3 = Kitchen.builder().name("Kitchen3").address("some place")
+            .contactPhone("1234567890").build();
+    kitchenRepository.save(kitchen1);
+    kitchenRepository.save(kitchen2);
+    kitchenRepository.save(kitchen3);
+  }
+
+  @AfterEach
+  public void cleanup() {
+    kitchenRepository.deleteAll();
+  }
+
   @Test
-  @DisplayName("Test 1:Save Kitchen Test")
+  @DisplayName("Test 1: Save Kitchen Test")
   @Order(1)
-  @Rollback(value = false)
+  @Transactional
   public void testSaveKitchen() {
-    Kitchen kitchen =
-            Kitchen.builder().name("Kitchen1").address("some place")
-                            .contactPhone("1234567890").build();
+    Kitchen kitchen = Kitchen.builder().name("Kitchen4")
+            .address("another place").contactPhone("0987654321").build();
     kitchenRepository.save(kitchen);
+    System.out.println(kitchenRepository.findAll());
     System.out.println(kitchen);
     Assertions.assertThat(kitchen.getKitchenId()).isGreaterThan(0);
-    Kitchen kitchen1 =
-            Kitchen.builder().name("Kitchen2").address("some place")
-                    .contactPhone("1234567890").build();
-    kitchenRepository.save(kitchen1);
-    System.out.println(kitchen1);
-    Assertions.assertThat(kitchen1.getKitchenId()).isGreaterThan(1);
-    Kitchen kitchen2 =
-            Kitchen.builder().name("Kitchen3").address("some place")
-                    .contactPhone("1234567890").build();
-    kitchenRepository.save(kitchen2);
-    System.out.println(kitchen2);
-    Assertions.assertThat(kitchen2.getKitchenId()).isGreaterThan(2);
   }
 
   @Test
-  @DisplayName("Test 2:get Kitchen Test By Id")
+  @DisplayName("Test 2: Get Kitchen By Id Test")
   @Order(2)
   public void testGetKitchenById() {
-    Kitchen kitchen = kitchenRepository.findByKitchenId(1L).get();
-
+    System.out.println(kitchenRepository.findAll());
+    Long start = kitchenRepository.findFirstByOrderByKitchenIdAsc().getKitchenId();
+    Optional<Kitchen> optionalKitchen = kitchenRepository.findByKitchenId(start + 1);
+    Assertions.assertThat(optionalKitchen).isPresent();
+    Kitchen kitchen = optionalKitchen.get();
     System.out.println(kitchen);
-    Assertions.assertThat(kitchen.getKitchenId()).isEqualTo(1L);
+    Assertions.assertThat(kitchen.getKitchenId()).isEqualTo(start + 1);
   }
 
   @Test
-  @DisplayName("Test 3:get Kitchen Test By Name")
-  @Order(2)
-  public void getKitchenByNameTest() {
-    Kitchen kitchen = kitchenRepository.findByName("Kitchen1").get();
-
-    System.out.println(kitchen);
-    Assertions.assertThat(kitchen.getKitchenId()).isEqualTo(1L);
-    Assertions.assertThat(kitchen.getName()).isEqualTo("Kitchen1");
-  }
-
-  @Test
-  @DisplayName("Test 4:get all Kitchen Test By Id")
+  @DisplayName("Test 3: Get Kitchen By Name Test")
   @Order(3)
-  public void getListOfKitchensTest() {
-
-    List<Kitchen> kitchens = kitchenRepository.findAll();
-
-    for (Kitchen kitchen : kitchens) {
-      System.out.println(kitchen);
-    }
-    Assertions.assertThat(kitchens.size()).isEqualTo(3);
-
+  public void getKitchenByNameTest() {
+    Long start = kitchenRepository.findFirstByOrderByKitchenIdAsc().getKitchenId();
+    Optional<Kitchen> optionalKitchen = kitchenRepository.findByName("Kitchen1");
+    Assertions.assertThat(optionalKitchen).isPresent();
+    Kitchen kitchen = optionalKitchen.get();
+    System.out.println(kitchen);
+    Assertions.assertThat(kitchen.getKitchenId()).isEqualTo(start);
   }
 
   @Test
-  @DisplayName("Test 5:get similar Kitchen Test By Name")
+  @DisplayName("Test 4: Get All Kitchens Test")
   @Order(4)
-  public void getListOfSimilarKitchensTest() {
-
-    List<Kitchen> kitchens = kitchenRepository.findByNameContaining("Kit");
-
+  public void getListOfKitchensTest() {
+    List<Kitchen> kitchens = kitchenRepository.findAll();
     for (Kitchen kitchen : kitchens) {
       System.out.println(kitchen);
     }
     Assertions.assertThat(kitchens.size()).isEqualTo(3);
-
   }
 
   @Test
+  @DisplayName("Test 5: Get Similar Kitchens By Name Test")
   @Order(5)
-  @DisplayName("Test 6: update Kitchen Test By ID")
-  @Rollback(value = false)
-  public void updateKitchenTest() {
-
-
-    Kitchen kitchen = kitchenRepository.findById(1L).get();
-    kitchen.setContactPhone("2345678901");
-    Kitchen kitchenUpdated =  kitchenRepository.save(kitchen);
-
-
-    System.out.println(kitchenUpdated);
-    Assertions.assertThat(kitchenUpdated.getContactPhone()).isEqualTo("2345678901");
-
+  public void getListOfSimilarKitchensTest() {
+    List<Kitchen> kitchens = kitchenRepository.findByNameContaining("Kit");
+    for (Kitchen kitchen : kitchens) {
+      System.out.println(kitchen);
+    }
+    Assertions.assertThat(kitchens.size()).isEqualTo(3);
   }
 
   @Test
   @Order(6)
-  @DisplayName("Test 7: delete Kitchen Test By ID")
-  @Rollback(value = false)
-  public void deleteKitchenTest() {
+  @DisplayName("Test 6: Update Kitchen Test By ID")
+  @Transactional
+  public void updateKitchenTest() {
+    System.out.println(kitchenRepository.findAll());
+    Long start = kitchenRepository.findFirstByOrderByKitchenIdAsc().getKitchenId();
+    Optional<Kitchen> optionalKitchen = kitchenRepository.findById(start);
+    Assertions.assertThat(optionalKitchen).isPresent();
+    Kitchen kitchen = optionalKitchen.get();
+    kitchen.setContactPhone("2345678901");
+    Kitchen kitchenUpdated = kitchenRepository.save(kitchen);
 
-    kitchenRepository.deleteById(1L);
-    Optional<Kitchen> kitchenOptional = kitchenRepository.findById(1L);
-
-    Assertions.assertThat(kitchenOptional).isEmpty();
+    System.out.println(kitchenUpdated);
+    Assertions.assertThat(kitchenUpdated.getContactPhone()).isEqualTo("2345678901");
   }
 
-  //TODO top rated test
+  @Test
+  @Order(7)
+  @DisplayName("Test 7: Delete Kitchen Test By ID")
+  @Transactional
+  public void deleteKitchenTest() {
+    System.out.println(kitchenRepository.findAll());
+    Long start = kitchenRepository.findFirstByOrderByKitchenIdAsc().getKitchenId();
+    kitchenRepository.deleteById(start);
+    Optional<Kitchen> kitchenOptional = kitchenRepository.findById(start);
+    Assertions.assertThat(kitchenOptional).isEmpty();
+  }
 }
