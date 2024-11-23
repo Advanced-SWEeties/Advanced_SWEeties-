@@ -2,12 +2,13 @@ package dev.teamproject.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.teamproject.model.Kitchen;
 import dev.teamproject.model.User;
+import dev.teamproject.model.Kitchen;
 import dev.teamproject.model.UserLocation;
 import dev.teamproject.repository.UserRepository;
 import dev.teamproject.service.UserService;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.PriorityQueue;
@@ -15,6 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -165,8 +170,7 @@ public class UserServiceImpl implements UserService {
     return EARTH_RADIUS_KM * c;
   }
 
-
-  private final UserRepository userRepository; // Assuming you have a UserRepository
+  private final UserRepository userRepository; 
   
   @Autowired
   public UserServiceImpl(UserRepository userRepository) {
@@ -175,31 +179,27 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public Optional<User> getUserById(Long userId) {
-    return userRepository.findById(userId); // Assuming you have a method in UserRepository
+    return userRepository.findById(userId); 
   }
 
   @Override
   public void saveUser(User user) {
-    userRepository.save(user); // Assuming you have a method in UserRepository
+    userRepository.save(user); 
   }
 
-  /**
-   * Authenticates user credentials.
-   *
-   * @param username the username of the user
-   * @param password the password of the user
-   * @return an Optional containing the User if credentials are valid, otherwise empty.
-   */
   @Override
-  public Optional<User> authenticate(String username, String password) {
-    Optional<User> userOpt = userRepository.findByUsername(username); 
-    if (userOpt.isPresent()) {
-      User user = userOpt.get();
-      // Validate the password (assuming you have a method to check password)
-      if (user.getPassword().equals(password)) { // Use hashed password comparison in production
-        return Optional.of(user);
-      }
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    User user = userRepository.findByUsername(username);
+    if (user == null) {
+      throw new UsernameNotFoundException("User not found with username: " + username);
     }
-    return Optional.empty();
+    return new org.springframework.security.core.userdetails.User(
+        user.getUsername(), user.getPassword(), 
+        Collections.singletonList(new SimpleGrantedAuthority(user.getRole())));
+  }
+  
+  @Override
+  public void deleteUser(Long userId) {
+    userRepository.deleteById(userId);
   }
 }
