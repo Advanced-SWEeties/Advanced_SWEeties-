@@ -62,6 +62,9 @@ public class User {
     }
   }
 
+  /**
+   * Update the role of the user.
+   */
   public void updateRole() {
     if (!this.role.equals("ROLE_ADMIN")) {
       setUserAuthority();
@@ -91,8 +94,7 @@ public class User {
   }
 
   /**
-   * Sets the user type based on the age of the account.
-   * The user type is determined by the number of months since the account was created:
+   * Get the username of the account.
    */
   public String getUsername() {
     return this.username;
@@ -106,6 +108,9 @@ public class User {
     return this.password; // This should be the hashed password
   }
 
+  /**
+   * Get the user role of the account.
+   */
   public String getRole() {
     return role;
   }

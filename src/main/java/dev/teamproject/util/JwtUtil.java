@@ -9,10 +9,17 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.stereotype.Component;
 
+/**
+ * Utility class for handling JSON Web Token (JWT) operations.
+ * This class provides methods to generate JWTs for user authentication. 
+ */
 @Component
 public class JwtUtil {
   private static final String secretKey = "Hello";
 
+  /**
+   * Generates jwt token.
+   */ 
   public String generateToken(String username) {
     JwtBuilder jwt = Jwts.builder().subject(username).issuedAt(new Date())
         .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
@@ -20,6 +27,9 @@ public class JwtUtil {
     return jwt.compact();
   }
 
+  /**
+   * Generates a SecretKey for JWT. 
+   */ 
   public SecretKey generateJwtSecretKey() {
     // Convert the static word to a byte array
     byte[] keyBytes = secretKey.getBytes();

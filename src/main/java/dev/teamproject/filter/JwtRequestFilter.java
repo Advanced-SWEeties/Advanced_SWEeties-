@@ -15,6 +15,11 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+/**
+ * Filter for processing JWT authentication in requests.
+ * This class extracts the JWT from the Authorization header, validates it,
+ * and sets the authentication context if the token is valid.
+ */
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 

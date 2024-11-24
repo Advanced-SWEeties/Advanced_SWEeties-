@@ -65,7 +65,7 @@ public class UserController {
       User user = optionalUser.get(); 
       user.updateRole(); 
       return new ResponseEntity<>(user, HttpStatus.OK); 
-      } else {
+    } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
     }
   }

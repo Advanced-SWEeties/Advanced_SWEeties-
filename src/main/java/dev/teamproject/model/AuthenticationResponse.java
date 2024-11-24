@@ -1,5 +1,8 @@
 package dev.teamproject.model;
 
+/**
+ * Represents the response for authentication, containing a JWT and an error message.
+ */
 public class AuthenticationResponse {
   private String jwt;
   private String error;
