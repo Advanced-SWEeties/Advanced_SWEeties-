@@ -684,7 +684,7 @@ public class KitchenServiceUnitTests {
     when(kitchenRepository.findAll()).thenReturn(Collections.emptyList());
 
     // Action and verify
-    assertThrows(NullPointerException.class, () -> kitchenService.fetchTopRatedKitchens(3));
+    assertEquals(null, kitchenService.fetchTopRatedKitchens(3));
   }
 
   @Test

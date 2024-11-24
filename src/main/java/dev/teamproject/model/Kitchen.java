@@ -1,5 +1,6 @@
 package dev.teamproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -52,6 +53,7 @@ public class Kitchen {
 
   private Double rating;
   @OneToMany(mappedBy = "kitchen", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
   private List<Rating> ratings = new ArrayList<>();
 
   @Size(max = 200)
