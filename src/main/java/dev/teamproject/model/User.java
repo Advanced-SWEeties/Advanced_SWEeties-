@@ -1,25 +1,20 @@
 package dev.teamproject.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import jakarta.persistence.CascadeType;
 
 /**
  * Represents a User entity in the application.
@@ -30,7 +25,7 @@ import jakarta.persistence.CascadeType;
 @Entity
 @SpringBootApplication
 @Table(name = "\"user\"")
-public class User{
+public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long userId;
@@ -55,17 +50,19 @@ public class User{
    * @param username the username for the new account
    * @param password the password for the new account
    */
+  
   public void createAccount(String username, String password, String role) {
     this.username = username;
     this.password = password;
     this.accountCreationTime = LocalDateTime.now();
-    if (role == null || role.isEmpty())
-      setUserAuthority();
-    else
+    if (role == null || role.isEmpty()) {
+      setUserAuthority(); 
+    } else {
       this.role = role;
+    }
   }
 
-  public void updateRole(){
+  public void updateRole() {
     if (!this.role.equals("ROLE_ADMIN")) {
       setUserAuthority();
     }
@@ -86,11 +83,9 @@ public class User{
       this.role = "PLATINUM_USER";
     } else if (accountAgeInMonths >= 3) {
       this.role = "GOLD_USER";
-    } 
-    else if (accountAgeInMonths >= 1) {
+    } else if (accountAgeInMonths >= 1) {
       this.role = "SILVER_USER";
-    } 
-    else {
+    } else {
       this.role = "BRONZE_USER";
     }
   }
@@ -111,13 +106,13 @@ public class User{
     return this.password; // This should be the hashed password
   }
 
-	public String getRole() {
-		return role;
-	}
+  public String getRole() {
+    return role;
+  }
 
-	public void setRole(String role) {
-		this.role = role;
-	}
+  public void setRole(String role) {
+    this.role = role;
+  }
 
   @Override
   public String toString() {

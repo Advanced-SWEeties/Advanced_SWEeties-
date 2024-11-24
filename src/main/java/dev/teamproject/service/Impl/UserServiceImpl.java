@@ -2,8 +2,8 @@ package dev.teamproject.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.teamproject.model.User;
 import dev.teamproject.model.Kitchen;
+import dev.teamproject.model.User;
 import dev.teamproject.model.UserLocation;
 import dev.teamproject.repository.UserRepository;
 import dev.teamproject.service.UserService;

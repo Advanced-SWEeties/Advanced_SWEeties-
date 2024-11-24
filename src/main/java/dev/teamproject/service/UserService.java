@@ -1,7 +1,7 @@
 package dev.teamproject.service;
 
-import dev.teamproject.model.User;
 import dev.teamproject.model.Kitchen;
+import dev.teamproject.model.User;
 import dev.teamproject.model.UserLocation;
 import java.util.List;
 import java.util.Optional;

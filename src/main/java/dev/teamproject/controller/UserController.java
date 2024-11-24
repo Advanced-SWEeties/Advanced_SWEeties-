@@ -1,10 +1,9 @@
 package dev.teamproject.controller;
 
+import dev.teamproject.model.AuthenticationResponse;
 import dev.teamproject.model.User;
 import dev.teamproject.service.UserService;
 import dev.teamproject.util.JwtUtil;
-import dev.teamproject.model.AuthenticationResponse;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -40,15 +39,15 @@ public class UserController {
   public UserController(UserService userService) {
     this.userService = userService;
   }
-  
+
   @Autowired
   private AuthenticationManager authenticationManager;
 
   @Autowired
   private PasswordEncoder passwordEncoder; // Inject the password encoder
 
-	@Autowired
-	private JwtUtil jwtUtil;
+  @Autowired
+  private JwtUtil jwtUtil;
 
   /**
    * Endpoint: /api/users/{userId}
@@ -63,11 +62,11 @@ public class UserController {
     Optional<User> optionalUser = userService.getUserById(userId);
     
     if (optionalUser.isPresent()) {
-        User user = optionalUser.get(); // Get the AppUser instance
-        user.updateRole(); // Call updateRole on the AppUser instance
-        return new ResponseEntity<>(user, HttpStatus.OK); // Return the user with HTTP 200 OK
-    } else {
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Return HTTP 404 if the user is not found
+      User user = optionalUser.get(); 
+      user.updateRole(); 
+      return new ResponseEntity<>(user, HttpStatus.OK); 
+      } else {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
     }
   }
 
@@ -118,13 +117,13 @@ public class UserController {
       System.out.println("Password: " + password);
       authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(username, password));
-			 final UserDetails userDetails = userService.loadUserByUsername(username);
-			 String jwt = jwtUtil.generateToken(userDetails.getUsername());
-			 return ResponseEntity.ok(new AuthenticationResponse(jwt, null));
-		 }catch(Exception e) {
-			 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-					 .body(new AuthenticationResponse(null, "Invalid username or password "+e.getMessage()));
-		 }
+      final UserDetails userDetails = userService.loadUserByUsername(username);
+      String jwt = jwtUtil.generateToken(userDetails.getUsername());
+      return ResponseEntity.ok(new AuthenticationResponse(jwt, null));
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        .body(new AuthenticationResponse(null, "Invalid username or password " + e.getMessage()));
+    }
   }
 
 
