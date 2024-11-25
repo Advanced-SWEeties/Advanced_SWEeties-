@@ -1,18 +1,25 @@
 package dev.teamproject.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import dev.teamproject.model.Kitchen;
+import dev.teamproject.model.User;
 import dev.teamproject.model.UserLocation;
 import dev.teamproject.repository.KitchenRepository;
+import dev.teamproject.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -23,6 +30,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -34,6 +43,9 @@ class UserServiceImplTest {
 
   @InjectMocks
   private UserServiceImpl userServiceImpl;
+
+  @Mock
+  private UserRepository userRepository;
 
   @Mock
   private KitchenRepository kitchenRepository;
@@ -219,5 +231,75 @@ class UserServiceImplTest {
     double expected = 1.3945025343830006;
     // verify
     assertEquals(expected, result, 0.1);
+  }
+
+  // User service tests
+  @Test
+  void testGetUserById_ExistingUser() {
+    User user = new User();
+    user.setUserId(1L);
+    user.setUsername("testuser");
+
+    given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+    Optional<User> foundUser = userServiceImpl.getUserById(1L);
+
+    assertTrue(foundUser.isPresent());
+    assertEquals("testuser", foundUser.get().getUsername());
+  }
+
+  @Test
+  void testGetUserById_NonExistingUser() {
+    given(userRepository.findById(1L)).willReturn(Optional.empty());
+
+    Optional<User> foundUser = userServiceImpl.getUserById(1L);
+
+    assertFalse(foundUser.isPresent());
+  }
+
+  @Test
+  void testSaveUser() {
+    User user = new User();
+    user.setUsername("testuser");
+
+    userServiceImpl.saveUser(user);
+
+    verify(userRepository).save(user);
+  }
+
+  @Test
+  void testLoadUserByUsername_ExistingUser() {
+    User user = new User();
+    user.setUsername("testuser");
+    user.setPassword("password");
+    user.setRole("USER");
+
+    given(userRepository.findByUsername("testuser")).willReturn(user);
+
+    UserDetails userDetails = userServiceImpl.loadUserByUsername("testuser");
+
+    assertNotNull(userDetails);
+    assertEquals("testuser", userDetails.getUsername());
+    assertEquals("password", userDetails.getPassword());
+    assertEquals(1, userDetails.getAuthorities().size());
+    assertEquals("USER", userDetails.getAuthorities().iterator().next().getAuthority());
+  }
+
+  @Test
+  void testLoadUserByUsername_NonExistingUser() {
+    given(userRepository.findByUsername("nonexistentuser")).willReturn(null);
+
+    assertThrows(UsernameNotFoundException.class, () -> {
+      userServiceImpl.loadUserByUsername("nonexistentuser");
+    });
+  }
+
+  @Test
+  void testDeleteUser() {
+    Long userId = 1L;
+
+    userServiceImpl.deleteUser(userId);
+
+    verify(userRepository).deleteById(userId);
   }
 }
