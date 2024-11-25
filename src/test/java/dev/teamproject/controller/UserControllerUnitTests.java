@@ -55,7 +55,7 @@ class UserControllerUnitTests {
     user.setUserId(1L);
     user.setUsername("testuser");
     user.setPassword(passwordEncoder.encode("password")); // Encoding the password for testing
-    user.setRole("ROLE_ADMIN");
+    user.setRole("ROLE_MANAGER");
   }
 
   @Test

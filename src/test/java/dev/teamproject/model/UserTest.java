@@ -36,8 +36,8 @@ class UserTest {
 
   @Test
   void testCreateAccount_SetsGivenRole() {
-    user.createAccount("testuser", "password123", "ROLE_ADMIN");
-    assertEquals("ROLE_ADMIN", user.getRole());
+    user.createAccount("testuser", "password123", "ROLE_MANAGER");
+    assertEquals("ROLE_MANAGER", user.getRole());
   }
 
   @Test
@@ -49,15 +49,15 @@ class UserTest {
 
     user.updateRole();
 
-    assertEquals("PLATINUM_USER", user.getRole());
+    assertEquals("SUPER_GOLDEN_PLUS_USER", user.getRole());
   }
 
   @Test
   void testUpdateRole_RoleIsAdmin_NoUpdate() {
-    user.createAccount("testuser", "password123", "ROLE_ADMIN");
+    user.createAccount("testuser", "password123", "ROLE_MANAGER");
     user.updateRole();
 
-    assertEquals("ROLE_ADMIN", user.getRole());
+    assertEquals("ROLE_MANAGER", user.getRole());
   }
 
   @Test
@@ -91,7 +91,7 @@ class UserTest {
     user.setAccountCreationTime(LocalDateTime.now().minusMonths(5)); // Exactly 5 months
     user.setUserRole();
 
-    assertEquals("PLATINUM_USER", user.getRole());
+    assertEquals("SUPER_GOLDEN_PLUS_USER", user.getRole());
   }
 
   @Test
