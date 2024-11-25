@@ -297,7 +297,7 @@ public class KitchenServiceImpl implements KitchenService {
   public List<Kitchen> fetchTopRatedKitchens(int count) {
     List<Kitchen> allKitchens = getAllKitchens();
     if (allKitchens.isEmpty()) {
-      throw null;
+      return null;
     }
 
     allKitchens.sort((k1, k2) -> Double.compare(k2.getRating(), k1.getRating()));
