@@ -43,8 +43,11 @@ public class SecurityConfig {
         .csrf().disable()
         .authorizeHttpRequests(requests -> requests
             .requestMatchers("/api/users/login").permitAll()
-            .requestMatchers("/api/users/add").permitAll()
-            .requestMatchers("/api/users/delete/**").hasRole("ADMIN")
+            .requestMatchers("/api/users/add").hasRole("MANAGER")
+            .requestMatchers("/api/users/delete/**").hasRole("MANAGER")
+            .requestMatchers("/api/kitchens/update").hasAnyRole("MANAGER", "SUPER_GOLDEN_PLUS")
+            .requestMatchers("/api/kitchens/add").hasAnyRole("MANAGER", "SUPER_GOLDEN_PLUS")
+            .requestMatchers("/api/kitchens/delete").hasAnyRole("MANAGER", "SUPER_GOLDEN_PLUS")
           .requestMatchers("/api/users/**").authenticated()
           .anyRequest().permitAll()
       )
@@ -57,8 +60,7 @@ public class SecurityConfig {
   }
 
   /**
-   * Controller for managing kitchen-related endpoints.
-   * This class handles HTTP requests related to kitchen operations.
+   * Password Encoder.
    */
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -66,8 +68,7 @@ public class SecurityConfig {
   }
 
   /**
-   * Controller for managing kitchen-related endpoints.
-   * This class handles HTTP requests related to kitchen operations.
+   * Authentication.
    */
   @Bean
   public DaoAuthenticationProvider authenticationProvider() {

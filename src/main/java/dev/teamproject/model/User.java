@@ -61,7 +61,7 @@ public class User {
    * Update the role of the user.
    */
   public void updateRole() {
-    if (!this.userType.equals("ROLE_ADMIN")) {
+    if (!this.userType.equals("ROLE_MANAGER")) {
       setUserRole();
     }
   }
@@ -78,7 +78,7 @@ public class User {
     long accountAgeInMonths = ChronoUnit.MONTHS.between(accountCreationTime, LocalDateTime.now());
 
     if (accountAgeInMonths >= 5) {
-      this.userType = "PLATINUM_USER";
+      this.userType = "SUPER_GOLDEN_PLUS_USER";
     } else if (accountAgeInMonths >= 3) {
       this.userType = "GOLD_USER";
     } else if (accountAgeInMonths >= 1) {

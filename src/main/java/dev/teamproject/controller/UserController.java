@@ -87,8 +87,6 @@ public class UserController {
     try {
       User newUser = new User(); // Create a new User object
       String encodedPassword = passwordEncoder.encode(rawPassword); // Encode the password
-      System.out.println("Password: " + encodedPassword);
-
       newUser.createAccount(username, encodedPassword, role); // Set the encoded password
       userService.saveUser(newUser); // Save the new user
       return new ResponseEntity<>("New user added successfully.", HttpStatus.CREATED);
