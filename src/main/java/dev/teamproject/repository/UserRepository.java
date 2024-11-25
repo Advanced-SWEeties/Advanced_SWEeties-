@@ -1,15 +1,17 @@
 package dev.teamproject.repository;
 
 import dev.teamproject.model.User;
-import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Repository interface for accessing User entities from the database.
- * It extends JpaRepository to provide CRUD operations.
- * This repository provides methods to find relevant User information.
+ * Repository interface for User entity.
+ * This interface provides methods to perform CRUD operations on User.
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    
+  // Optional method to find a user by username
+  User findByUsername(String username);
 }

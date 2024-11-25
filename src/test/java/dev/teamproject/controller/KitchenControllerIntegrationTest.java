@@ -79,11 +79,11 @@ public class KitchenControllerIntegrationTest {
         .build();
 
     user1 = new User();
-    user1.createAccount("user1", "password1");
+    user1.createAccount("user1", "password1", "");
     user1 = userRepository.save(user1);
 
     user2 = new User();
-    user2.createAccount("user2", "password2");
+    user2.createAccount("user2", "password2", "");
     user2 = userRepository.save(user2);
 
     kitchen1 = Kitchen.builder()
