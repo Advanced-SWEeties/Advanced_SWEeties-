@@ -113,8 +113,6 @@ public class UserController {
 
     try {
       // Use Spring Security's AuthenticationManager for authentication
-      System.out.println("Username: " + username);
-      System.out.println("Password: " + password);
       authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(username, password));
       final UserDetails userDetails = userService.loadUserByUsername(username);
@@ -125,7 +123,6 @@ public class UserController {
         .body(new AuthenticationResponse(null, "Invalid username or password " + e.getMessage()));
     }
   }
-
 
   /**
    * Endpoint: /api/users/delete/{userId}

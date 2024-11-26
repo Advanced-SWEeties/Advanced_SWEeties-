@@ -79,12 +79,8 @@ public class User {
 
     if (accountAgeInMonths >= 5) {
       this.userType = "SUPER_GOLDEN_PLUS_USER";
-    } else if (accountAgeInMonths >= 3) {
-      this.userType = "GOLD_USER";
-    } else if (accountAgeInMonths >= 1) {
-      this.userType = "SILVER_USER";
     } else {
-      this.userType = "BRONZE_USER";
+      this.userType = "STANDARD_USER";
     }
   }
 
