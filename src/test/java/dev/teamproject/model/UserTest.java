@@ -31,7 +31,7 @@ class UserTest {
   @Test
   void testCreateAccount_SetsRoleWhenEmpty() {
     user.createAccount("testuser", "password123", "");
-    assertEquals("BRONZE_USER", user.getRole()); // Assuming newly created users are BRONZE
+    assertEquals("STANDARD_USER", user.getRole()); // Assuming newly created users are BRONZE
   }
 
   @Test
@@ -65,25 +65,7 @@ class UserTest {
     user.setAccountCreationTime(LocalDateTime.now().minusDays(15)); // Less than 1 month
     user.setUserRole();
 
-    assertEquals("BRONZE_USER", user.getRole());
-  }
-
-  @Test
-  void testSetUserRole_AccountAge1To2Months() {
-    user.setAccountCreationTime(LocalDateTime.now()
-        .minusMonths(1).minusDays(15)); // About 1.5 months
-    user.setUserRole();
-
-    assertEquals("SILVER_USER", user.getRole());
-  }
-
-  @Test
-  void testSetUserRole_AccountAge3To4Months() {
-    user.setAccountCreationTime(LocalDateTime.now()
-        .minusMonths(3).minusDays(1)); // Just under 4 months
-    user.setUserRole();
-
-    assertEquals("GOLD_USER", user.getRole());
+    assertEquals("STANDARD_USER", user.getRole());
   }
 
   @Test
@@ -131,8 +113,8 @@ class UserTest {
   void testToString() {
     user.setUserId(1L);
     user.setUsername("testuser");
-    user.setRole("BRONZE_USER");
+    user.setRole("STANDARD_USER");
 
-    assertEquals("1 testuser BRONZE_USER.", user.toString());
+    assertEquals("1 testuser STANDARD_USER.", user.toString());
   }
 }
