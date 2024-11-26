@@ -51,9 +51,9 @@ public class RatingRepositoryUnitTests {
             .contactPhone("1234567890")
             .build();
     kitchen = kitchenRepository.save(kitchen);
-
+    userRepository.deleteAll();
     user1 = new User();
-    user1.setUsername("Test User 1");
+    user1.setUsername("Test User");
     user1 = userRepository.save(user1);
   }
 
@@ -64,7 +64,6 @@ public class RatingRepositoryUnitTests {
     Rating rating = Rating.builder()
             .kitchen(kitchen)
             .user(user1)
-            .userName("John Doe")
             .rating(5)
             .comments("Excellent service!")
             .build();
@@ -80,7 +79,6 @@ public class RatingRepositoryUnitTests {
     Rating rating = Rating.builder()
             .kitchen(kitchen)
             .user(user1)
-            .userName("John Doe")
             .rating(5)
             .comments("Excellent service!")
             .build();
@@ -99,7 +97,6 @@ public class RatingRepositoryUnitTests {
     Rating rating = Rating.builder()
             .kitchen(kitchen)
             .user(user1)
-            .userName("John Doe")
             .rating(5)
             .comments("Excellent service!")
             .build();
@@ -119,7 +116,6 @@ public class RatingRepositoryUnitTests {
     Rating rating = Rating.builder()
             .kitchen(kitchen)
             .user(user1)
-            .userName("John Doe")
             .rating(5)
             .comments("Excellent service!")
             .build();
@@ -133,12 +129,11 @@ public class RatingRepositoryUnitTests {
   @Test
   @DisplayName("Test 5: Update Rating Test")
   @Order(5)
-  @Rollback(value = false)
+  @Rollback
   public void testUpdateRating() {
     Rating rating = Rating.builder()
             .kitchen(kitchen)
             .user(user1)
-            .userName("John Doe")
             .rating(5)
             .comments("Excellent service!")
             .build();
@@ -154,12 +149,11 @@ public class RatingRepositoryUnitTests {
   @Test
   @DisplayName("Test 6: Delete Rating Test")
   @Order(6)
-  @Rollback(value = false)
+  @Rollback
   public void testDeleteRating() {
     Rating rating = Rating.builder()
             .kitchen(kitchen)
             .user(user1)
-            .userName("John Doe")
             .rating(5)
             .comments("Excellent service!")
             .build();
