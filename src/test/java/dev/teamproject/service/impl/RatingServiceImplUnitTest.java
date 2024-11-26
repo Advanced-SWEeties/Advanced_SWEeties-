@@ -1,10 +1,12 @@
 package dev.teamproject.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -232,6 +234,9 @@ public class RatingServiceImplUnitTest {
         .rating(4)
         .waitSec(100L)
         .comments("Updated Comment")
+        .commentUrl("http://hellohellotest.com")  // Adding new URL
+        .publishTime("2024-11-24T12:00:00")  // Adding publish time
+        .relativeTime("2 days ago")  // Adding relative time
         .build();
 
     given(ratingRepository.findById(1L)).willReturn(Optional.of(rating1));
@@ -245,9 +250,13 @@ public class RatingServiceImplUnitTest {
     assertEquals(4, result.getRating());
     assertEquals(100L, result.getWaitSec());
     assertEquals("Updated Comment", result.getComments());
+    assertEquals("http://hellohellotest.com", result.getCommentUrl());  // Verifying the new URL
+    assertEquals("2024-11-24T12:00:00", result.getPublishTime());  // Verifying the new publish time
+    assertEquals("2 days ago", result.getRelativeTime());  // Verifying the new relative time
     verify(ratingRepository, times(1)).findById(1L);
     verify(ratingRepository, times(1)).save(any(Rating.class));
   }
+
   
   @Test
   @Order(9)
@@ -272,6 +281,47 @@ public class RatingServiceImplUnitTest {
     verify(ratingRepository, times(0)).save(any(Rating.class));
   }
  
+  @Test
+  @Order(10)
+  public void updateRatingTest_InvalidRating() {
+    Rating updatedRating = new Rating();
+    updatedRating.setRating(6);  // Invalid rating
+
+    given(ratingRepository.findById(1L)).willReturn(Optional.of(rating1));
+
+    Exception exception = assertThrows(IllegalArgumentException.class, 
+        () -> ratingService.updateRating(updatedRating, 1L));
+
+    assertEquals("Rating must be between 1 and 5", exception.getMessage());
+    verify(ratingRepository, never()).save(any(Rating.class));
+  }
+  
+  @Test
+  public void updateRating_MinRating() {
+    Rating rating = new Rating();
+    rating.setRating(1);
+
+    given(ratingRepository.findById(1L)).willReturn(Optional.of(rating));
+    given(ratingRepository.save(any(Rating.class))).willReturn(rating);
+
+    Rating result = ratingService.updateRating(rating, 1L);
+    
+    assertEquals(1, result.getRating());
+  }
+  
+  @Test
+  public void updateRating_MaxRating() {
+    Rating rating = new Rating();
+    rating.setRating(5);
+
+    given(ratingRepository.findById(1L)).willReturn(Optional.of(rating));
+    given(ratingRepository.save(any(Rating.class))).willReturn(rating);
+
+    Rating result = ratingService.updateRating(rating, 1L);
+    
+    assertEquals(5, result.getRating());
+  }
+
   @Test
   @Order(10)
   public void deleteRatingTest() {
