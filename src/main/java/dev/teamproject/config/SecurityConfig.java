@@ -42,14 +42,12 @@ public class SecurityConfig {
     http
         .csrf().disable()
         .authorizeHttpRequests(requests -> requests
-            .requestMatchers("/api/users/login").permitAll()
-            .requestMatchers("/api/users/add").hasRole("MANAGER")
             .requestMatchers("/api/users/delete/**").hasRole("MANAGER")
             .requestMatchers("/api/kitchens/delete").hasRole("MANAGER")
             .requestMatchers("/api/ratings/delete").hasRole("MANAGER")
             .requestMatchers("/api/kitchens/update").hasAnyRole("MANAGER", "SUPER_GOLDEN_PLUS")
             .requestMatchers("/api/kitchens/add").hasAnyRole("MANAGER", "SUPER_GOLDEN_PLUS")
-          .requestMatchers("/api/users/**").authenticated()
+          .requestMatchers("/api/users/**").permitAll()
           .requestMatchers("/api/kitchens/**").authenticated()
           .requestMatchers("/api/ratings/**").authenticated()
           .anyRequest().permitAll()
