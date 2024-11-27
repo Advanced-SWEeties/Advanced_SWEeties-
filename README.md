@@ -29,10 +29,16 @@ mvn spring-boot:run
 - [Get Nearest Kitchens](#get-nearest-kitchens)
 - [Get Top Rated Kitchens](#get-top-rated-kitchens)
 - [Get Kitchen Details](#get-kitchen-details)
+- [Predict Waiting Times (not implemented yet)](#predict-waiting-times-not-implemented-yet)
 - [Submit Rating](#submit-rating)
 - [User Login](#user-login)
 - [Update Kitchen Info](#update-kitchen-info)
 - [Add Kitchen](#add-kitchen)
+- [Add Rating](#add-rating)
+- [Update Rating](#update-rating)
+- [Delete Rating](#delete-rating)
+- [Get Predicted Wait Time](#get-predicted-wait-time)
+- [Retrieve Kitchen Ratings](#retrieve-kitchen-ratings)
 - [Delete User](#delete-user)
 
 ### Note for Developers
@@ -81,7 +87,7 @@ mvn spring-boot:run
 **Description**: Fetches detailed information about a specific charity kitchen, including operational status, operating hours, and services offered.
 
 **Query Parameters**:
-- `kitchen_id` (Long) - Unique identifier for the charity kitchen.
+- `kitchen_id` (Long) - Kitchen id
 
 **Response**:
 - `200 OK`: Returns detailed kitchen information.
@@ -95,7 +101,7 @@ mvn spring-boot:run
 **Description**: Uses machine learning models to predict average waiting times based on historical data.
 
 **Query Parameters**:
-- `kitchen_id` (Long) - Unique identifier for the charity kitchen.
+- `kitchen_id` (Long) - kitchen id
 
 **Response**:
 - `200 OK`: Returns the predicted average waiting time.
@@ -125,7 +131,7 @@ mvn spring-boot:run
 
 ---
 
-## User Login (Not implemented yet)
+## User Login
 ### `POST /api/users/login`
 **Description**: Authenticates user credentials and returns an API key for session management.
 
@@ -198,14 +204,117 @@ mvn spring-boot:run
 
 ---
 
-## Delete User (Not implemented yet)
+## Add Rating
+### `POST /api/rating/add`
+
+**Description**: Allows users to leave comments, wait times, and ratings for a kitchen.
+
+**Request Body**:
+```json
+{
+  "kitchenId": "Long",
+  "userId": "Long",
+  "rating": "Integer",
+  "comments": "String",
+  "waitSec": "Long",
+  "userName": "String",
+  "commentUrl": "String",
+  "publishTime": "String",
+  "relativeTime": "String"
+}
+```
+
+**Responses**:
+- `201 Created`: Rating added successfully. 
+- `400 Bad Request`: Invalid rating details provided. 
+- `500 Internal Server Error`: Backend error for unexpected situations.
+
+---
+
+
+## Update Rating
+### `PUT /ratings/update`
+
+**Description**: This endpoint allows users to update an existing rating. Users can modify details about a rating they previously submitted.
+
+**Request Body**:
+```json
+{
+  "ratingId": "Long",
+  "kitchenId": "Long",
+  "userId": "Long",
+  "rating": "Integer",
+  "comments": "String",
+  "waitSec": "Long",
+  "userName": "String",
+  "commentUrl": "String", 
+  "publishTime": "String",
+  "relativeTime": "String" 
+}
+```
+
+**Responses**:
+- `200 OK`: Rating updated successfully.
+- `404 Not Found`: No rating found with the provided ID. 
+- `500 Internal Server Error`: Backend error for unexpected situations.
+
+---
+
+
+## Delete Rating
+### `DELETE /ratings/delete`
+**Required Role**: `MANAGER`
+
+**Description**: Deletes a rating with the specified ID. This endpoint allows managers to remove ratings from the system.
+
+**Request Parameters**:
+- **ratingId** (required): The id of the rating to be deleted.
+
+**Responses**:
+- `200 OK`: Rating deleted successfully.
+- `404 Not Found`: No rating could be found with the given ID.
+- `500 Internal Server Error`: Backend error for unexpected situations.
+
+---
+
+## Get Predicted Wait Time
+### `GET /kitchens/wait_time`
+
+**Description**: Retrieves the predicted waiting time for a specific kitchen based on available ratings.
+
+**Request Parameters**:
+- `kitchenId` (required): The id of the kitchen for which the predicted wait time is requested.
+
+**Responses**:
+- `200 OK`: The predicted wait time for the kitchen is returned. With the predicted wait time being a double.
+- `404 Not Found`: No ratings with wait time found for this kitchen or kitchen not found.
+- `500 Internal Server Error`: Backend error for unexpected situations.
+
+---
+
+## Retrieve Kitchen Ratings
+### `GET /ratings/retrieveKitchenRatings`
+
+**Description**: Retrieves all ratings associated with a specific kitchen identified by its kitchen ID.
+
+**Query Parameters**:
+- `kitchenId` (required): The id of the kitchen for which ratings are requested.
+
+**Responses**:
+- `200 OK`: Successfully retrieves a list of all ratings for the specified kitchen. The response body contains an array of rating objects.
+- `404 Not Found`: No ratings found for the given kitchen ID or the kitchen does not exist.
+- `500 Internal Server Error`: A generic error message for any unexpected backend errors.
+
+---
+
+## Delete User
 ### `DELETE /api/users/delete`
 **Required Role**: `MANAGER`
 
 **Description**: Allows authorized users to delete a user from the system.
 
 **Query Parameters**:
-- `user_id` (Long) - Unique identifier for the user to be deleted.
+- `user_id` (Long) - The user ID
 
 **Response**:
 - `200 OK`: User deleted successfully.
