@@ -356,7 +356,7 @@ After running the tests, you can view the code coverage report in the `target/si
 
 ### Coverage report
 We have run the tests and generated a coverage report!
-<img width="1242" alt="image" src="https://github.com/user-attachments/assets/3e250131-619f-453e-8eed-db11e3eeb7ed">
+<img width="1078" alt="image" src="https://github.com/user-attachments/assets/b93b60f9-5925-4c28-87b5-f915b1ec840d">
 
 
 ### Our api test results
