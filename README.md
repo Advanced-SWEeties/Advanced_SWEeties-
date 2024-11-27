@@ -31,7 +31,6 @@ mvn spring-boot:run
 - [Get Kitchen Details](#get-kitchen-details)
 - [Predict Waiting Times (not implemented yet)](#predict-waiting-times-not-implemented-yet)
 - [Submit Rating](#submit-rating)
-- [User Login](#user-login)
 - [Update Kitchen Info](#update-kitchen-info)
 - [Add Kitchen](#add-kitchen)
 - [Add Rating](#add-rating)
@@ -39,6 +38,9 @@ mvn spring-boot:run
 - [Delete Rating](#delete-rating)
 - [Get Predicted Wait Time](#get-predicted-wait-time)
 - [Retrieve Kitchen Ratings](#retrieve-kitchen-ratings)
+- [User Login](#user-login)
+- [Get User](#get-user)
+- [Add User](#add-user)
 - [Delete User](#delete-user)
 
 ### Note for Developers
@@ -127,25 +129,6 @@ mvn spring-boot:run
 - `200 OK`: Rating successfully recorded.
 - `400 Bad Request`: If the input parameters are invalid.
 - `404 Not Found`: If `kitchen_id` or `user_id` does not exist.
-- `500 Internal Server Error`: For unexpected backend errors.
-
----
-
-## User Login
-### `POST /api/users/login`
-**Description**: Authenticates user credentials and returns an API key for session management.
-
-**Request Body**:
-```json
-{
-  "username": "String",
-  "password": "String"
-}
-```
-
-**Response**:
-- `200 OK`: Returns API key and user details.
-- `401 Unauthorized`: If credentials are incorrect.
 - `500 Internal Server Error`: For unexpected backend errors.
 
 ---
@@ -304,6 +287,54 @@ mvn spring-boot:run
 - `200 OK`: Successfully retrieves a list of all ratings for the specified kitchen. The response body contains an array of rating objects.
 - `404 Not Found`: No ratings found for the given kitchen ID or the kitchen does not exist.
 - `500 Internal Server Error`: A generic error message for any unexpected backend errors.
+
+---
+
+## User Login
+### `POST /api/users/login`
+**Description**: Authenticates user credentials and returns an API key for session management.
+
+**Request Body**:
+```json
+{
+  "username": "String",
+  "password": "String"
+}
+```
+
+**Response**:
+- `200 OK`: Returns API key and user details.
+- `401 Unauthorized`: If credentials are incorrect.
+- `500 Internal Server Error`: For unexpected backend errors.
+
+---
+
+## Get User 
+### `GET /api/users/{userId}`
+**Description**: Retrieves user details by user ID.
+
+**Response**:
+- `200 OK`: Returns user details.
+- `404 Not Found`: If the user ID does not exist.
+
+---
+
+## Add User
+### `POST /api/users/add`
+**Required Role**: `MANAGER`
+
+**Request Body**:
+```json
+{
+  "username": "String",
+  "password": "String",
+  "role": "String"
+}
+```
+
+**Response**:
+`201 Created`: New user added successfully.
+`500 Internal Server Error`: For unexpected backend errors.
 
 ---
 
