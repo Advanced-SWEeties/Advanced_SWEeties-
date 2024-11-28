@@ -45,6 +45,6 @@ jobs:
       run: |
         git config --global user.name 'GitHub Actions'
         git config --global user.email 'github-actions@github.com'
-        git add checkstyle-report.xml pmd-report.xml jacoco-report.xml
+        git add checkstyle-report.xml pmd-report.xml jacoco-report.csv
         git commit -m "Add CI reports. style: checkstyle-report.xml. pmd: pmd-report.xml. jacoco: jacoco-report.csv"
         git push
