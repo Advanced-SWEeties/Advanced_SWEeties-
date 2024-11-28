@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="9.3">
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/repository/KitchenRepository.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/repository/RatingRepository.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/repository/UserRepository.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/filter/JwtRequestFilter.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/client/CallbackClientService.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/service/UserService.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/service/RatingService.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/service/Impl/OpenAiServiceImpl.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/service/Impl/RatingServiceImpl.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/service/Impl/UserServiceImpl.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/service/impl/KitchenServiceImpl.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/service/OpenAiService.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/service/KitchenService.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/TeamProjectApplication.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/config/SecurityConfig.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/util/JwtUtil.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/util/RandomGenerator.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/model/Kitchen.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/model/WaitTimePrediction.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/model/Rating.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/model/TempInfo.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/model/User.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/model/UserLocation.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/model/AuthenticationResponse.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/controller/KitchenController.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/controller/SampleController.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/controller/UserController.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/event/KitchenEventListener.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/java/dev/teamproject/event/KitchenCreatedEvent.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/repository/UserRepositoryUnitTests.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/repository/KitchenRepositoryUnitTests.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/repository/RatingRepositoryUnitTests.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/client/CallbackClientServiceTest.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/service/KitchenServiceUnitTests.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/service/impl/OpenAiServiceImplTest.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/service/impl/RatingServiceImplUnitTest.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/service/impl/UserServiceImplTest.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/config/NoSecurityConfig.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/util/JwtUtilTest.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/util/RandomGeneratorTest.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/integration/UserKitchenRatingIntegrationTest.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/model/KitchenTest.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/model/UserTest.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/controller/UserControllerUnitTests.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/controller/KitchenControllerIntegrationTest.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/controller/KitchenControllerUnitTests.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/event/KitchenEventListenerTest.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/test/java/dev/teamproject/event/KitchenCreatedEventTest.java">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/resources/application.properties">
+</file>
+<file name="/home/runner/work/Advanced_SWEeties-/Advanced_SWEeties-/src/main/resources/application-test.properties">
+</file>
+</checkstyle>
