@@ -326,6 +326,8 @@ mvn spring-boot:run
 
 ## Differnces from the original proposal
 - Instead of providing a list of top-rated kitchens which are sorted using a combination of user ratings and geographical location, we will just use the ratings to sort the kitchens which aligns more with the name of this endpoint, and also provide a count parameter for the user to specify the number of kitchens they want to see.
+- We added endpoints for ratings to allow users to add and modify their comments.
+- We added some endpoints for users to manage the accounts.
 
 ## Running the Application
 
@@ -431,6 +433,9 @@ For update, add, and delete kitchen, we will not provide curl commands since it 
 
 ## Geocoding API
 - We are using the Google Geocoding API to convert addresses to latitude and longitude coordinates. The API key is stored in the `application.properties` file. We implemented a service class to handle the API requests and responses. For the full implementation, please refer to the service/impl/KitchenServiceImpl (method: fetchAllKitchens). For the full documentation of the Geocoding API, please visit [here](https://developers.google.com/maps/documentation/geocoding/overview).  
+
+# Link to the client api
+[SharePlate](https://github.com/Advanced-SWEeties/SharePlate)
 
 ## License
 
