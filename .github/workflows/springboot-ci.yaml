@@ -24,7 +24,7 @@ jobs:
       run: mvn checkstyle:check checkstyle:checkstyle
 
     - name: Copy Checkstyle report to repository
-      run: cp target/checkstyle-report.xml $GITHUB_WORKSPACE/checkstyle-report.xml
+      run: cp target/checkstyle-result.xml $GITHUB_WORKSPACE/checkstyle-report.xml
 
     - name: Static Analysis with PMD
       run: mvn pmd:pmd
@@ -44,7 +44,7 @@ jobs:
     - name: Commit reports to repository
       run: |
         git config --global user.name 'GitHub Actions'
-        git config --global user.email 'actions@github.com'
+        git config --global user.email 'github-actions@github.com'
         git add checkstyle-report.xml pmd-report.xml jacoco-report.xml
         git commit -m "Add CI reports. style: checkstyle-report.xml. pmd: pmd-report.xml. jacoco: jacoco-report.csv"
         git push
