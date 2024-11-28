@@ -16,9 +16,9 @@ public interface RatingService {
 
   List<Rating> getKitchenRatings(Long kitchenId);
 
-  public double getPredictedWaitingTime(Long kitchenId);
+  double getPredictedWaitingTime(Long kitchenId);
 
-  public Rating updateRating(Rating rating, long id);
+  Rating updateRating(Rating rating, long id);
 
-  public void deleteRating(long id);
+  void deleteRating(long id);
 }

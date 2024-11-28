@@ -218,7 +218,7 @@ public class KitchenController {
     // Check user role
     // Logic to update kitchen info
     try {
-      Kitchen kitchen = kitchenService.updateKitchen(updatedKitchenDetails,
+      kitchenService.updateKitchen(updatedKitchenDetails,
               updatedKitchenDetails.getKitchenId());
       return  new ResponseEntity<>("Kitchen information updated successfully.", HttpStatus.OK);
     } catch (RuntimeException e) {
