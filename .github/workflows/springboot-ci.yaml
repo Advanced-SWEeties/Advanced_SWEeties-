@@ -2,15 +2,19 @@ name: Spring Boot CI
 
 on:
   push:
-    branches: [ '**' ]  # Runs on all branches when pushed
+    branches: [ '**' ]
   pull_request:
-    branches: [ '**' ]  # Runs on all branches for pull requests
+    branches: [ '**' ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
     - uses: actions/checkout@v3
+
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
@@ -18,12 +22,32 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Style check
-      run: mvn checkstyle:check
+    - name: Style check and generate report
+      run: mvn checkstyle:check checkstyle:checkstyle
+
+    - name: Copy Checkstyle report to repository
+      run: cp target/checkstyle-result.xml $GITHUB_WORKSPACE/checkstyle-report.xml
+
+    - name: Static Analysis with PMD
+      run: mvn pmd:pmd
+
+    - name: Copy PMD report to repository
+      run: cp target/pmd.xml $GITHUB_WORKSPACE/pmd-report.xml
 
     - name: Build with Maven
       run: mvn clean install
 
-    - name: Run tests
-      run: mvn test
-    
+    - name: Run tests with JaCoCo coverage report
+      run: mvn test jacoco:report
+
+    - name: Copy JaCoCo report to repository
+      run: cp target/site/jacoco/jacoco.csv $GITHUB_WORKSPACE/jacoco-report.csv
+
+    - name: Commit reports to repository
+      run: |
+        git config --global user.name 'GitHub Actions'
+        git config --global user.email 'github-actions@github.com'
+        git add checkstyle-report.xml pmd-report.xml jacoco-report.csv
+        git commit -m "Add CI reports. style: checkstyle-report.xml. pmd: pmd-report.xml. jacoco: jacoco-report.csv"
+        git push
+
